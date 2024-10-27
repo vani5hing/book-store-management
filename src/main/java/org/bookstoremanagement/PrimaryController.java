@@ -19,7 +19,7 @@ public class PrimaryController {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-        if (isValidCredentials(username, password)) {
+        if (DatabaseUtil.validateUser(username, password)) {
             showAlert(AlertType.INFORMATION, "Login Successful", "Welcome, " + username + "!");
         } else {
             showAlert(AlertType.ERROR, "Login Failed", "Invalid username or password.");
@@ -31,13 +31,11 @@ public class PrimaryController {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-        // Implement sign-up logic here
-        showAlert(AlertType.INFORMATION, "Sign Up", "Sign up successful for user: " + username);
-    }
-
-    private boolean isValidCredentials(String username, String password) {
-        // Replace with actual validation logic
-        return "user".equals(username) && "pass".equals(password);
+        if (DatabaseUtil.addUser(username, password)) {
+            showAlert(AlertType.INFORMATION, "Sign Up Successful", "User " + username + " has been registered.");
+        } else {
+            showAlert(AlertType.ERROR, "Sign Up Failed", "Could not register user.");
+        }
     }
 
     private void showAlert(AlertType alertType, String title, String message) {

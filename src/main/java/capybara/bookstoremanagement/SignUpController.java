@@ -21,7 +21,7 @@ public class SignUpController {
 
     @FXML
     private void handleSignUpAction() {
-        String studentId = studentIdField.getText();
+        // String studentId = studentIdField.getText();
         String username = usernameField.getText();
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
@@ -31,18 +31,18 @@ public class SignUpController {
             return;
         }
 
-        if (addUser(studentId, username, password)) {
+        if (DatabaseUtil.addUser(username, password)) {
             showAlert(Alert.AlertType.INFORMATION, "Sign Up Successful", "User " + username + " has been registered.");
         } else {
             showAlert(Alert.AlertType.ERROR, "Sign Up Failed", "Could not register user.");
         }
     }
 
-    private boolean addUser(String studentId, String username, String password) {
-        // Replace with actual database interaction logic
-        // return DatabaseUtil.addUser(username, password);
-        return true;
-    }
+    // private boolean addUser(String studentId, String username, String password) {
+    //     // Replace with actual database interaction logic
+    //     // return DatabaseUtil.addUser(username, password);
+    //     return true;
+    // }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);

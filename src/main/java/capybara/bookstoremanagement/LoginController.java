@@ -35,8 +35,7 @@ public class LoginController {
     }
 
     private boolean isValidCredentials(String username, String password) {
-        // Replace with actual validation logic
-        return "user".equals(username) && "pass".equals(password);
+        return DatabaseUtil.validateUser(username, password);
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {

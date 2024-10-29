@@ -17,6 +17,8 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        DatabaseUtil.createTables();
+
         scene = new Scene(loadFXML("login"), 640, 480);
         stage.setScene(scene);
         stage.show();

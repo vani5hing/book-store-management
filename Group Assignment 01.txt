@@ -1,0 +1,36 @@
+Topic 4: Book Store Management
+
+The requirements are: Payment functions for customers, Statistics on revenue, Profits over a specific period of time, and other costs incurred.
+
+I'll analyze for each of those requirements above.
+
+There will be a Main class which merge all the classes needed and run the whole program.
+
++) Payment functions for customers:
+	- Products: A class contains overall features like: name, price, product code (ISBN), originate, etc.
+		* Properties: name, price, productCode, originate.
+		* Methods: getName, setName, getPrice, setPrice, getProductCode, setProductCode, getOriginate, setOriginate.
+	- Books: Inheritance from "Products.java", extends include author, publisher, etc.
+	- Stationaries: Inheritance from "Products.java", extends include brand, stationary type, etc.
+	- Toys: Inheritance from "Products.java", extends include brand, suitable ages, etc.
+	- Database: Data about productions that appear in the store, which are books, stationaries, toys, etc.
+	- CheckProduct: Checking product information using product code (ISBN).
+	- Sale: Let customers using their coupon apply for a specific product.
+	- 
+	
++) Statistics on revenue:
+	- totalRevenueOnBooks: Calculate the total revenue of books each day.
+	- totalRevenueOnStationaries: Calculate the total revenue of stationaries each day.
+	- totalRevenueOnToys: Calculate the total revenue of toys each day.
+	- totalRevenue: Calculate the total revenue each day.
+	
++) Other costs incurred:
+	- employeeSalary: 
+	- managerSalary: inheritance from employeeSalary, but with some bonus
+
++) Profits over a specific period of time: (Monthly profit)
+	- 
+	- dailyProfit: profit on a whole specific day, calculated by subtracting total revenue of the day by 
+	- totalProfit: total profit of a month, calculated by sum of all profit each day that month.
+
+Requirements stay the same, but some classes, properties or methods could be changed or added in the final project

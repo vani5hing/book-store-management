@@ -25,6 +25,15 @@ public class LoginController {
         }
     }
 
+    @FXML
+    private void handleNewUser() {
+        try {
+            App.setRoot("signup");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private boolean isValidCredentials(String username, String password) {
         // Replace with actual validation logic
         return "user".equals(username) && "pass".equals(password);

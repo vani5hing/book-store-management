@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class DatabaseUtil {
 
-    private static final String URL = "jdbc:sqlite:/home/respectthanh/Workspaces/visual studio code/book-store-management/bookstore.db"; // Change this to your database URL
+    private static final String URL = "jdbc:sqlite:./bookstore.db"; // Change this to your database URL
 
     static {
         try {

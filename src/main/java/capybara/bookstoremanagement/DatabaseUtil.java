@@ -25,6 +25,13 @@ public class DatabaseUtil {
                                 + "price REAL NOT NULL"
                                 + ");";
 
+        String createAccountsTable = "CREATE TABLE IF NOT EXISTS accounts ("
+                                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                + "username TEXT NOT NULL UNIQUE, "
+                                + "password TEXT NOT NULL, "
+                                + "role TEXT NOT NULL CHECK(role IN ('admin', 'manager', 'employee'))"
+                                + ");";
+
         String createCustomersTable = "CREATE TABLE IF NOT EXISTS customers ("
                                     + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                                     + "name TEXT NOT NULL, "
@@ -50,17 +57,18 @@ public class DatabaseUtil {
 
         try (Connection conn = connect(); Statement stmt = conn.createStatement()) {
             stmt.execute(createBooksTable);
+            stmt.execute(createAccountsTable);
             stmt.execute(createCustomersTable);
             stmt.execute(createEmployeesTable);
             stmt.execute(createOrdersTable);
-            System.out.println("Tables 'books', 'customers', 'employees', and 'orders' created or already exist.");
+            System.out.println("Tables 'books', 'accounts', 'customers', 'employees', and 'orders' created or already exist.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public static boolean validateUser(String username, String password) {
-        String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+        String sql = "SELECT * FROM accounts WHERE username = ? AND password = ?";
 
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -76,13 +84,11 @@ public class DatabaseUtil {
     }
 
     public static boolean addUser(String username, String password) {
-        String sql = "INSERT INTO users(username, password) VALUES(?, ?)";
-
+        String sql = "INSERT INTO accounts(username, password) VALUES(?, ?)";
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
             pstmt.setString(2, password);
-            // pstmt.setString(3, studentId);
             pstmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -179,9 +185,7 @@ public class DatabaseUtil {
         String sql = "SELECT * FROM customers";
         Connection conn = connect();
         return conn.createStatement().executeQuery(sql);
-    }
-
-    public static void createEmployee(String name, String position, double salary) throws SQLException {
+    }public static void createEmployee(String name, String position, double salary) throws SQLException {
         String sql = "INSERT INTO employees(name, position, salary) VALUES(?, ?, ?)";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, name);
@@ -264,9 +268,7 @@ public class DatabaseUtil {
                 throw new SQLException("Book not found");
             }
         }
-    }
-
-    public static double getBookPriceById(String bookId) throws SQLException {
+    }public static double getBookPriceById(String bookId) throws SQLException {
         String sql = "SELECT price FROM books WHERE bookId = ?";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, bookId);

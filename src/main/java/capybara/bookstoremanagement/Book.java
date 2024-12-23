@@ -1,11 +1,14 @@
 package capybara.bookstoremanagement;
 
-public class Book {
+public class Book extends Item {
     private int id;
     private String bookId;
     private String title;
     private String author;
-    private double price;
+
+    public Book(String name, String origin, double price, int quantity, String ISBN) {
+        super(name, origin, price, quantity, ISBN);
+    }
 
     public Book(int id, String bookId, String title, String author, double price) {
         this.id = id;

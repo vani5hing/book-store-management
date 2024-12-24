@@ -6,8 +6,8 @@ public class Book extends Item {
     private String title;
     private String author;
 
-    public Book(String name, String origin, double price, int quantity, String ISBN) {
-        super(name, origin, price, quantity, ISBN);
+    public Book(String name, String origin, double price, int quantity) {
+        super(name, origin, price, quantity);
     }
 
     public Book(int id, String bookId, String title, String author, double price) {

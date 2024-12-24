@@ -5,16 +5,14 @@ public class Item {
     public String origin;
     public double price;
     public int quantity;
-    public String ISBN;
 
     public Item() {}
 
-    public Item(String name, String origin, double price, int quantity, String ISBN) {
+    public Item(String name, String origin, double price, int quantity) {
         this.name = name;
         this.origin = origin;
         this.price = price;
         this.quantity = quantity;
-        this.ISBN = ISBN;
     }
 
     public String getName() {
@@ -31,9 +29,5 @@ public class Item {
 
     public int getQuantity() {
         return quantity;
-    }
-
-    public String getISBN() {
-        return ISBN;
     }
 }

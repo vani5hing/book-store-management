@@ -20,7 +20,7 @@
                 <Button text="Add Book" onAction="#handleAddBook"/>
                 <Button text="Edit Book" onAction="#handleEditBook"/>
                 <Button text="Delete Book" onAction="#handleDeleteBook"/>
-                <Button text="Return to Menu" onAction="#handleReturnToMenu"/>
+                <Button text="Return to Manage Items" onAction="#handleReturnToMenu"/>
             </children>
         </HBox>
     </children>

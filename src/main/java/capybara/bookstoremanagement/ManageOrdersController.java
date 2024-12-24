@@ -6,19 +6,19 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 public class ManageOrdersController {
@@ -30,9 +30,9 @@ public class ManageOrdersController {
     @FXML
     private TableColumn<Order, String> colCustomer;
     @FXML
-    private TableColumn<Order, String> colBookId;
+    private TableColumn<Order, String> colBooks;
     @FXML
-    private TableColumn<Order, Integer> colQuantity;
+    private TableColumn<Order, String> colQuantities;
     @FXML
     private TableColumn<Order, Double> colTotalPrice;
 
@@ -40,8 +40,8 @@ public class ManageOrdersController {
     public void initialize() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
         colCustomer.setCellValueFactory(new PropertyValueFactory<>("customer"));
-        colBookId.setCellValueFactory(new PropertyValueFactory<>("bookId"));
-        colQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        colBooks.setCellValueFactory(new PropertyValueFactory<>("booksFormatted"));
+        colQuantities.setCellValueFactory(new PropertyValueFactory<>("quantitiesFormatted"));
         colTotalPrice.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
 
         loadOrders();
@@ -52,7 +52,9 @@ public class ManageOrdersController {
         try {
             ResultSet rs = DatabaseUtil.getAllOrders();
             while (rs.next()) {
-                tableView.getItems().add(new Order(rs.getInt("id"), rs.getString("customer"), rs.getString("bookId"), rs.getInt("quantity"), rs.getDouble("totalPrice")));
+                Map<String, Integer> books = new HashMap<>();
+                books.put(rs.getString("bookId"), rs.getInt("quantity"));
+                tableView.getItems().add(new Order(rs.getInt("id"), rs.getString("customer"), books, rs.getDouble("totalPrice")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -65,45 +67,78 @@ public class ManageOrdersController {
         dialog.setTitle("Add New Order");
         dialog.setHeaderText("Enter the details of the new order");
 
-        // Set the button types
-        ButtonType addButtonType = new ButtonType("Add", ButtonType.OK.getButtonData());
+        ButtonType addButtonType = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(addButtonType, ButtonType.CANCEL);
 
-        // Create the customer, bookId, and quantity labels and fields
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
+        VBox vbox = new VBox(10);
 
         TextField customerField = new TextField();
         customerField.setPromptText("Customer");
+        vbox.getChildren().add(new Label("Customer:"));
+        vbox.getChildren().add(customerField);
+
+        // Create a map to store book fields
+        Map<TextField, TextField> bookFields = new HashMap<>();
+        final int[] row = {1};
+
         TextField bookIdField = new TextField();
         bookIdField.setPromptText("Book ID");
         TextField quantityField = new TextField();
         quantityField.setPromptText("Quantity");
-        Label totalPriceLabel = new Label("Total Price: $0.00");
 
-        grid.add(new Label("Customer:"), 0, 0);
-        grid.add(customerField, 1, 0);
-        grid.add(new Label("Book ID:"), 0, 1);
-        grid.add(bookIdField, 1, 1);
-        grid.add(new Label("Quantity:"), 0, 2);
-        grid.add(quantityField, 1, 2);
-        grid.add(totalPriceLabel, 1, 3);
+        Label totalPriceLabel = new Label("Total Price: €0,00");
+        vbox.getChildren().add(totalPriceLabel);
 
-        dialog.getDialogPane().setContent(grid);
+        bookIdField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(bookFields, totalPriceLabel));
+        quantityField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(bookFields, totalPriceLabel));
 
-        // Calculate total price when bookId and quantity are input
-        bookIdField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(bookIdField, quantityField, totalPriceLabel));
-        quantityField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(bookIdField, quantityField, totalPriceLabel));
+        GridPane bookGrid = new GridPane();
+        bookGrid.setHgap(10);
+        bookGrid.setVgap(10);
+        bookGrid.add(new Label("Book ID:"), 0, row[0]);
+        bookGrid.add(bookIdField, 1, row[0]);
+        bookGrid.add(new Label("Quantity:"), 2, row[0]);
+        bookGrid.add(quantityField, 3, row[0]);
 
-        // Convert the result to an Order object when the Add button is clicked
+        bookFields.put(bookIdField, quantityField);
+
+        Button addBookButton = new Button("Add Book");
+        vbox.getChildren().add(bookGrid);
+        vbox.getChildren().add(addBookButton);
+
+        addBookButton.setOnAction(e -> {
+            row[0]++;
+            TextField newBookIdField = new TextField();
+            newBookIdField.setPromptText("Book ID");
+            TextField newQuantityField = new TextField();
+            newQuantityField.setPromptText("Quantity");
+
+            newBookIdField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(bookFields, totalPriceLabel));
+            newQuantityField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(bookFields, totalPriceLabel));
+
+            bookGrid.add(new Label("Book ID:"), 0, row[0]);
+            bookGrid.add(newBookIdField, 1, row[0]);
+            bookGrid.add(new Label("Quantity:"), 2, row[0]);
+            bookGrid.add(newQuantityField, 3, row[0]);
+
+            bookFields.put(newBookIdField, newQuantityField);
+        });
+
+        ScrollPane scrollPane = new ScrollPane(vbox);
+        scrollPane.setFitToWidth(true);
+        dialog.getDialogPane().setContent(scrollPane);
+
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == addButtonType) {
                 String customer = customerField.getText();
-                String bookId = bookIdField.getText();
-                int quantity = Integer.parseInt(quantityField.getText());
-                double totalPrice = Double.parseDouble(totalPriceLabel.getText().replace("Total Price: $", ""));
-                return new Order(0, customer, bookId, quantity, totalPrice);
+                Map<String, Integer> books = new HashMap<>();
+                for (Map.Entry<TextField, TextField> entry : bookFields.entrySet()) {
+                    String bookId = entry.getKey().getText();
+                    int quantity = Integer.parseInt(entry.getValue().getText());
+                    books.put(bookId, quantity);
+                }
+                double totalPrice = calculateTotalPrice(books);
+                return new Order(0, customer, books, totalPrice);
             }
             return null;
         });
@@ -111,24 +146,12 @@ public class ManageOrdersController {
         Optional<Order> result = dialog.showAndWait();
         result.ifPresent(order -> {
             try {
-                DatabaseUtil.createOrder(order.getCustomer(), order.getBookId(), order.getQuantity(), order.getTotalPrice());
+                DatabaseUtil.createOrder(order.getCustomer(), order.getBooks(), order.getTotalPrice());
                 loadOrders();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
-    }
-
-    private void calculateTotalPrice(TextField bookIdField, TextField quantityField, Label totalPriceLabel) {
-        try {
-            String bookId = bookIdField.getText();
-            int quantity = Integer.parseInt(quantityField.getText());
-            double price = DatabaseUtil.getBookPriceById(bookId);
-            double totalPrice = price * quantity;
-            totalPriceLabel.setText(String.format("Total Price: $%.2f", totalPrice));
-        } catch (NumberFormatException | SQLException e) {
-            totalPriceLabel.setText("Total Price: $0.00");
-        }
     }
 
     @FXML
@@ -139,42 +162,71 @@ public class ManageOrdersController {
             dialog.setTitle("Edit Order");
             dialog.setHeaderText("Edit the details of the order");
 
-            // Set the button types
-            ButtonType editButtonType = new ButtonType("Save", ButtonType.OK.getButtonData());
+            ButtonType editButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
             dialog.getDialogPane().getButtonTypes().addAll(editButtonType, ButtonType.CANCEL);
 
-            // Create the customer, bookId, and quantity labels and fields
-            GridPane grid = new GridPane();
-            grid.setHgap(10);
-            grid.setVgap(10);
+            VBox vbox = new VBox(10);
 
             TextField customerField = new TextField(selectedOrder.getCustomer());
-            TextField bookIdField = new TextField(selectedOrder.getBookId());
-            TextField quantityField = new TextField(String.valueOf(selectedOrder.getQuantity()));
-            Label totalPriceLabel = new Label(String.format("Total Price: $%.2f", selectedOrder.getTotalPrice()));
+            vbox.getChildren().add(new Label("Customer:"));
+            vbox.getChildren().add(customerField);
 
-            grid.add(new Label("Customer:"), 0, 0);
-            grid.add(customerField, 1, 0);
-            grid.add(new Label("Book ID:"), 0, 1);
-            grid.add(bookIdField, 1, 1);
-            grid.add(new Label("Quantity:"), 0, 2);
-            grid.add(quantityField, 1, 2);
-            grid.add(totalPriceLabel, 1, 3);
+            Map<TextField, TextField> bookFields = new HashMap<>();
+            final int[] row = {1};
+            GridPane bookGrid = new GridPane();
+            bookGrid.setHgap(10);
+            bookGrid.setVgap(10);
+            for (Map.Entry<String, Integer> entry : selectedOrder.getBooks().entrySet()) {
+                TextField bookIdField = new TextField(entry.getKey());
+                TextField quantityField = new TextField(entry.getValue().toString());
+                bookGrid.add(new Label("Book ID:"), 0, row[0]);
+                bookGrid.add(bookIdField, 1, row[0]);
+                bookGrid.add(new Label("Quantity:"), 2, row[0]);
+                bookGrid.add(quantityField, 3, row[0]);
+                bookFields.put(bookIdField, quantityField);
+                row[0]++;
+            }
 
-            dialog.getDialogPane().setContent(grid);
+            Button addBookButton = new Button("Add Book");
+            vbox.getChildren().add(bookGrid);
+            vbox.getChildren().add(addBookButton);
 
-            // Calculate total price when bookId and quantity are input
-            bookIdField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(bookIdField, quantityField, totalPriceLabel));
-            quantityField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(bookIdField, quantityField, totalPriceLabel));
+            Label totalPriceLabel = new Label(String.format("Total Price: €%.2f", selectedOrder.getTotalPrice()).replace('.', ','));
+            vbox.getChildren().add(totalPriceLabel);
 
-            // Convert the result to an Order object when the Save button is clicked
+            addBookButton.setOnAction(e -> {
+                row[0]++;
+                TextField newBookIdField = new TextField();
+                newBookIdField.setPromptText("Book ID");
+                TextField newQuantityField = new TextField();
+                newQuantityField.setPromptText("Quantity");
+
+                newBookIdField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(bookFields, totalPriceLabel));
+                newQuantityField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(bookFields, totalPriceLabel));
+
+                bookGrid.add(new Label("Book ID:"), 0, row[0]);
+                bookGrid.add(newBookIdField, 1, row[0]);
+                bookGrid.add(new Label("Quantity:"), 2, row[0]);
+                bookGrid.add(newQuantityField, 3, row[0]);
+
+                bookFields.put(newBookIdField, newQuantityField);
+            });
+
+            ScrollPane scrollPane = new ScrollPane(vbox);
+            scrollPane.setFitToWidth(true);
+            dialog.getDialogPane().setContent(scrollPane);
+
             dialog.setResultConverter(dialogButton -> {
                 if (dialogButton == editButtonType) {
                     String customer = customerField.getText();
-                    String bookId = bookIdField.getText();
-                    int quantity = Integer.parseInt(quantityField.getText());
-                    double totalPrice = Double.parseDouble(totalPriceLabel.getText().replace("Total Price: $", ""));
-                    return new Order(selectedOrder.getId(), customer, bookId, quantity, totalPrice);
+                    Map<String, Integer> books = new HashMap<>();
+                    for (Map.Entry<TextField, TextField> entry : bookFields.entrySet()) {
+                        String bookId = entry.getKey().getText();
+                        int quantity = Integer.parseInt(entry.getValue().getText());
+                        books.put(bookId, quantity);
+                    }
+                    double totalPrice = calculateTotalPrice(books);
+                    return new Order(selectedOrder.getId(), customer, books, totalPrice);
                 }
                 return null;
             });
@@ -182,7 +234,7 @@ public class ManageOrdersController {
             Optional<Order> result = dialog.showAndWait();
             result.ifPresent(order -> {
                 try {
-                    DatabaseUtil.updateOrder(order.getId(), order.getCustomer(), order.getBookId(), order.getQuantity(), order.getTotalPrice());
+                    DatabaseUtil.updateOrder(order.getId(), order.getCustomer(), order.getBooks(), order.getTotalPrice());
                     loadOrders();
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -218,6 +270,45 @@ public class ManageOrdersController {
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void calculateTotalPrice(Map<TextField, TextField> bookFields, Label totalPriceLabel) {
+        double totalPrice = 0.0;
+        for (Map.Entry<TextField, TextField> entry : bookFields.entrySet()) {
+            try {
+                String bookId = entry.getKey().getText();
+                int quantity = Integer.parseInt(entry.getValue().getText());
+                double price = DatabaseUtil.getBookPriceById(bookId);
+                totalPrice += price * quantity;
+            } catch (NumberFormatException | SQLException e) {
+                // Handle exception
+            }
+        }
+        totalPriceLabel.setText(String.format("Total Price: €%.2f", totalPrice).replace('.', ','));
+    }
+
+    private double calculateTotalPrice(Map<String, Integer> books) {
+        double totalPrice = 0.0;
+        for (Map.Entry<String, Integer> entry : books.entrySet()) {
+            try {
+                double price = DatabaseUtil.getBookPriceById(entry.getKey());
+                totalPrice += price * entry.getValue();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return totalPrice;
+    }
+
+    private double parsePrice(String priceString) {
+        try {
+            NumberFormat format = NumberFormat.getInstance(Locale.GERMANY);
+            Number number = format.parse(priceString);
+            return number.doubleValue();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0.0;
         }
     }
 }

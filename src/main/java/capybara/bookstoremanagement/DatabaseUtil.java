@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Map;
 import java.util.Random;
 
 public class DatabaseUtil {
@@ -223,28 +224,41 @@ public class DatabaseUtil {
         return conn.createStatement().executeQuery(sql);
     }
 
-    public static void createOrder(String customer, String bookId, int quantity, double totalPrice) throws SQLException {
+    public static void createOrder(String customer, Map<String, Integer> books, double totalPrice) throws SQLException {
         String sql = "INSERT INTO orders(customer, bookId, quantity, totalPrice) VALUES(?, ?, ?, ?)";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, customer);
-            pstmt.setString(2, bookId);
-            pstmt.setInt(3, quantity);
-            pstmt.setDouble(4, totalPrice);
-            pstmt.executeUpdate();
+            for (Map.Entry<String, Integer> entry : books.entrySet()) {
+                pstmt.setString(1, customer);
+                pstmt.setString(2, entry.getKey());
+                pstmt.setInt(3, entry.getValue());
+                pstmt.setDouble(4, totalPrice);
+                pstmt.addBatch();
+            }
+            pstmt.executeBatch();
         }
     }
 
-    public static void updateOrder(int id, String customer, String bookId, int quantity, double totalPrice) throws SQLException {
-        String sql = "UPDATE orders SET customer = ?, bookId = ?, quantity = ?, totalPrice = ? WHERE id = ?";
-        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, customer);
-            pstmt.setString(2, bookId);
-            pstmt.setInt(3, quantity);
-            pstmt.setDouble(4, totalPrice);
-            pstmt.setInt(5, id);
-            pstmt.executeUpdate();
+    public static void updateOrder(int id, String customer, Map<String, Integer> books, double totalPrice) throws SQLException {
+        String deleteSql = "DELETE FROM orders WHERE id = ?";
+        String insertSql = "INSERT INTO orders(id, customer, bookId, quantity, totalPrice) VALUES(?, ?, ?, ?, ?)";
+        try (Connection conn = connect(); 
+             PreparedStatement deletePstmt = conn.prepareStatement(deleteSql);
+             PreparedStatement insertPstmt = conn.prepareStatement(insertSql)) {
+            deletePstmt.setInt(1, id);
+            deletePstmt.executeUpdate();
+
+            for (Map.Entry<String, Integer> entry : books.entrySet()) {
+                insertPstmt.setInt(1, id);
+                insertPstmt.setString(2, customer);
+                insertPstmt.setString(3, entry.getKey());
+                insertPstmt.setInt(4, entry.getValue());
+                insertPstmt.setDouble(5, totalPrice);
+                insertPstmt.addBatch();
+            }
+            insertPstmt.executeBatch();
         }
     }
+
 
     public static void deleteOrder(int id) throws SQLException {
         String sql = "DELETE FROM orders WHERE id = ?";

@@ -64,7 +64,7 @@ Follow the steps below to set up the project locally:
 
 1. **Clone the repository:**
     ```bash
-    git clone https://github.com/yourusername/bookstore-management.git
+    git clone https://github.com/respectthanh/book-store-management.git
     ```
 2. **Navigate to the project directory:**
     ```bash

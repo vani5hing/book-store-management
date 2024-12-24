@@ -192,7 +192,7 @@ public class ManageBooksController {
     @FXML
     private void handleReturnToMenu(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("manage_items.fxml"));
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 640, 540));
             stage.show();

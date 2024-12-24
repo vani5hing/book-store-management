@@ -8,4 +8,5 @@
 
     <Label text="Manage which type of items?" styleClass="title-label"/>
     <Button text="Manage Books" onAction="#handleManageBooks" style="-fx-pref-width: 200px; -fx-pref-height: 40px"/>
+    <Button text="Return to menu" onAction="#handleReturnToMenu" style="-fx-pref-width: 200px; -fx-pref-height: 40px"/>
 </VBox>

@@ -147,7 +147,10 @@ public class DatabaseUtil {
         Random random = new Random();
         String bookId;
         do {
-            bookId = String.format("%06d", random.nextInt(1000000));
+            bookId = String.format("978-0-%05d-%03d-%d", 
+                                   random.nextInt(100000), 
+                                   random.nextInt(1000), 
+                                   random.nextInt(10));
         } while (isBookIdExists(bookId));
         return bookId;
     }

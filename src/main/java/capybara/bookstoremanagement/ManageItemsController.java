@@ -1,5 +1,7 @@
 package capybara.bookstoremanagement;
 
+import java.io.IOException;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +22,18 @@ public class ManageItemsController {
             stage.setScene(new Scene(root, 640, 540));
             stage.show();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleReturnToMenu(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root, 640, 540));
+            stage.show();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

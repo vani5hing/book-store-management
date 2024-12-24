@@ -17,8 +17,8 @@ public class AdminController {
     }
 
     @FXML
-    private void handleManageBooks(ActionEvent event) {
-        navigateToView(event, "manage_books");
+    private void handleManageItems(ActionEvent event) {
+        navigateToView(event, "manage_items");
     }
 
     @FXML

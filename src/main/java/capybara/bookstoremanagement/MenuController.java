@@ -89,4 +89,16 @@ public class MenuController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void handleManageItems(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("manage_items.fxml"));
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root, 640, 540));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

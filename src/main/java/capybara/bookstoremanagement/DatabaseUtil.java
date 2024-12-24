@@ -280,4 +280,21 @@ public class DatabaseUtil {
             }
         }
     }
+
+    public static String getUserRole(String username) {
+        String sql = "SELECT role FROM accounts WHERE username = ?";
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("role");
+            } else {
+                throw new SQLException("User not found");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

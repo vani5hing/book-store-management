@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="capybara.bookstoremanagement.AdminController" spacing="10" alignment="CENTER" style="-fx-padding: 20;">
+    <!-- <Label text="Admin View" style="-fx-font-size: 24px; -fx-font-weight: bold;" /> -->
+    <Button text="Manage Employees" onAction="#handleManageEmployees" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;" />
+    <Button text="Manage Books" onAction="#handleManageBooks" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;" />
+    <Button text="Manage Customers" onAction="#handleManageCustomers" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;" />
+    <Button text="Manage Orders" onAction="#handleManageOrders" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;" />
+</VBox>

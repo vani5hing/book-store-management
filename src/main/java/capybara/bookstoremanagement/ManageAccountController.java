@@ -23,16 +23,22 @@ import javafx.stage.Stage;
 
 public class ManageAccountController {
 
+    private String previousView;
+
+    public void setPreviousView(String previousView) {
+        this.previousView = previousView;
+    }
+
     @FXML
-    private TableView<Employee> tableView;
+    private TableView<Account> tableView;
     @FXML
-    private TableColumn<Book, Integer> colId;
+    private TableColumn<Account, Integer> colId;
     @FXML
-    private TableColumn<Employee, String> colUsername;
+    private TableColumn<Account, String> colUsername;
     @FXML
-    private TableColumn<Employee, String> colPassword;
+    private TableColumn<Account, String> colPassword;
     @FXML
-    private TableColumn<Employee, String> colRole;
+    private TableColumn<Account, String> colRole;
 
     @FXML
     public void initialize() {
@@ -41,15 +47,15 @@ public class ManageAccountController {
         colPassword.setCellValueFactory(new PropertyValueFactory<>("password"));
         colRole.setCellValueFactory(new PropertyValueFactory<>("role"));
 
-        loadEmployees();
+        loadAccounts();
     }
 
-    private void loadEmployees() {
+    private void loadAccounts() {
         tableView.getItems().clear();
         try {
-            ResultSet rs = DatabaseUtil.getAllEmployees();
+            ResultSet rs = DatabaseUtil.getAllAccounts();
             while (rs.next()) {
-                tableView.getItems().add(new Employee(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("role")));
+                tableView.getItems().add(new Account(rs.getInt("id"), rs.getString("username"), rs.getString("password"), rs.getString("role")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -57,10 +63,10 @@ public class ManageAccountController {
     }
 
     @FXML
-    private void handleAddEmployee(ActionEvent event) {
-        Dialog<Employee> dialog = new Dialog<>();
-        dialog.setTitle("Add New Employee");
-        dialog.setHeaderText("Enter the details of the new employee");
+    private void handleAddAccount(ActionEvent event) {
+        Dialog<Account> dialog = new Dialog<>();
+        dialog.setTitle("Add New Account");
+        dialog.setHeaderText("Enter the details of the new account");
 
         // Set the button types
         ButtonType addButtonType = new ButtonType("Add", ButtonType.OK.getButtonData());
@@ -93,15 +99,16 @@ public class ManageAccountController {
                 String username = usernameField.getText();
                 String password = passwordField.getText();
                 String role = roleField.getText();
-                return new Employee(0, username, password, role);
+                return new Account(0, username, password, role);
             }
             return null;
         });
 
-        Optional<Employee> result = dialog.showAndWait();
-        result.ifPresent(employee -> {
+        Optional<Account> result = dialog.showAndWait();
+        result.ifPresent(account -> {
             try {
-                DatabaseUtil.createUser(employee.getUsername(), employee.getPassword(), employee.getRole());
+                DatabaseUtil.createAccount(account.getUsername(), account.getPassword(), account.getRole());
+                loadAccounts();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -109,12 +116,12 @@ public class ManageAccountController {
     }
 
     @FXML
-    private void handleEditEmployee(ActionEvent event) {
-        Employee selectedEmployee = tableView.getSelectionModel().getSelectedItem();
-        if (selectedEmployee != null) {
-            Dialog<Employee> dialog = new Dialog<>();
-            dialog.setTitle("Edit Employee");
-            dialog.setHeaderText("Edit the details of the employee");
+    private void handleEditAccount(ActionEvent event) {
+        Account selectedAccount = tableView.getSelectionModel().getSelectedItem();
+        if (selectedAccount != null) {
+            Dialog<Account> dialog = new Dialog<>();
+            dialog.setTitle("Edit Account");
+            dialog.setHeaderText("Edit the details of the account");
 
             // Set the button types
             ButtonType editButtonType = new ButtonType("Save", ButtonType.OK.getButtonData());
@@ -125,9 +132,9 @@ public class ManageAccountController {
             grid.setHgap(10);
             grid.setVgap(10);
 
-            TextField usernameField = new TextField(selectedEmployee.getUsername());
-            TextField passwordField = new TextField(selectedEmployee.getPassword());
-            TextField roleField = new TextField(selectedEmployee.getRole());
+            TextField usernameField = new TextField(selectedAccount.getUsername());
+            TextField passwordField = new TextField(selectedAccount.getPassword());
+            TextField roleField = new TextField(selectedAccount.getRole());
 
             grid.add(new Label("Username:"), 0, 0);
             grid.add(usernameField, 1, 0);
@@ -144,16 +151,16 @@ public class ManageAccountController {
                     String username = usernameField.getText();
                     String password = passwordField.getText();
                     String role = roleField.getText();
-                    return new Employee(selectedEmployee.getId(), username, password, role);
+                    return new Account(selectedAccount.getId(), username, password, role);
                 }
                 return null;
             });
 
-            Optional<Employee> result = dialog.showAndWait();
-            result.ifPresent(employee -> {
+            Optional<Account> result = dialog.showAndWait();
+            result.ifPresent(account -> {
                 try {
-                    DatabaseUtil.updateEmployee(employee.getId(), employee.getName(), employee.getPosition(), employee.getSalary());
-                    loadEmployees();
+                    DatabaseUtil.updateAccount(account.getId(), account.getUsername(), account.getPassword(), account.getRole());
+                    loadAccounts();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -162,15 +169,15 @@ public class ManageAccountController {
     }
 
     @FXML
-    private void handleDeleteEmployee(ActionEvent event) {
-        Employee selectedEmployee = tableView.getSelectionModel().getSelectedItem();
-        if (selectedEmployee != null) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this employee?", ButtonType.YES, ButtonType.NO);
+    private void handleDeleteAccount(ActionEvent event) {
+        Account selectedAccount = tableView.getSelectionModel().getSelectedItem();
+        if (selectedAccount != null) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this account?", ButtonType.YES, ButtonType.NO);
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.YES) {
                     try {
-                        DatabaseUtil.deleteEmployee(selectedEmployee.getId());
-                        loadEmployees();
+                        DatabaseUtil.deleteAccount(selectedAccount.getId());
+                        loadAccounts();
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -182,9 +189,9 @@ public class ManageAccountController {
     @FXML
     private void handleReturnToMenu(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource(previousView + ".fxml"));
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 1080, 640));
+            stage.setScene(new Scene(root, 640, 480));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

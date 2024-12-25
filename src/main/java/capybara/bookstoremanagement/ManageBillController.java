@@ -64,15 +64,15 @@ public class ManageBillController {
     }
 
     @FXML
-    private void handleGenerateBill() {
-        try {
-            String customer = getSelectedCustomer();
+    private void handleGenerateBill() throws SQLException {
+        // try {
+            {String customer = getSelectedCustomer();
             Bill bill = generateBillForCustomer(customer);
             saveBillToFile(bill);
-            displayBill(bill);
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
-        }
+            displayBill(bill);}
+        // } catch (SQLException | IOException e) {
+            // e.printStackTrace();
+        // }
     }
 
     private Bill generateBillForCustomer(String customer) throws SQLException {

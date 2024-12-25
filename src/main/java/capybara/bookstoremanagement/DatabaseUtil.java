@@ -610,5 +610,13 @@ public class DatabaseUtil {
             return rs.getInt(1) > 0;
         }
     }
+    public static ResultSet getLatestOrderTimeByCustomer(String customer) throws SQLException {
+        String query = "SELECT MAX(timeCreated) AS latest_time FROM orders WHERE customer = ?";
+        Connection connection = connect();
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, customer);
+        return preparedStatement.executeQuery();
+    }
+    
 
     }

@@ -173,30 +173,40 @@ public class ManageOrdersController {
     }
 
     @FXML
-    private void handleGenerateBill(ActionEvent event) {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Generate Bill");
-        dialog.setHeaderText("Enter the customer name and time created to generate the bill");
-        dialog.setContentText("Customer:");
+private void handleGenerateBill(ActionEvent event) {
+    TextInputDialog dialog = new TextInputDialog();
+    dialog.setTitle("Generate Bill");
+    dialog.setHeaderText("Enter the customer name to generate the bill");
+    dialog.setContentText("Customer:");
 
-        Optional<String> result = dialog.showAndWait();
-        result.ifPresent(customer -> {
-            TextInputDialog timeDialog = new TextInputDialog();
-            timeDialog.setTitle("Generate Bill");
-            timeDialog.setHeaderText("Enter the time created to generate the bill");
-            timeDialog.setContentText("Time Created:");
-
-            Optional<String> timeResult = timeDialog.showAndWait();
-            timeResult.ifPresent(timeCreated -> {
-                try {
-                    Bill bill = generateBillForCustomer(customer, timeCreated);
-                    displayBill(bill);
-                } catch (SQLException | IOException e) {
-                    e.printStackTrace();
-                }
-            });
-        });
+    Optional<String> result = dialog.showAndWait();
+    result.ifPresent(customer -> {
+        try {
+            // Tìm thời gian đặt hàng gần nhất của khách hàng
+            String latestTimeCreated = getLatestOrderTimeForCustomer(customer);
+            if (latestTimeCreated != null) {
+                Bill bill = generateBillForCustomer(customer, latestTimeCreated);
+                displayBill(bill);
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("No Orders Found");
+                alert.setHeaderText("No orders found for this customer");
+                alert.setContentText("The customer '" + customer + "' does not have any orders.");
+                alert.showAndWait();
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+    });
+}
+private String getLatestOrderTimeForCustomer(String customer) throws SQLException {
+    ResultSet rs = DatabaseUtil.getLatestOrderTimeByCustomer(customer);
+    if (rs.next()) {
+        return rs.getString("latest_time");
     }
+    return null;
+}
+
 
     private Bill generateBillForCustomer(String customer, String timeCreated) throws SQLException {
         ResultSet rs = DatabaseUtil.getOrdersByCustomerAndTime(customer, timeCreated);
@@ -228,18 +238,6 @@ public class ManageOrdersController {
         stage.show();
     }
 
-    private double calculateTotalPrice(Map<String, Integer> items) {
-        double totalPrice = 0.0;
-        for (Map.Entry<String, Integer> entry : items.entrySet()) {
-            try {
-                double price = DatabaseUtil.getItemPriceById(entry.getKey());
-                totalPrice += price * entry.getValue();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return totalPrice;
-    }
 
     private double calculateTotalPrice(String itemid, int quantity) {
         double totalPrice = 0.0;

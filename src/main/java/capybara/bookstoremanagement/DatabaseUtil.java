@@ -55,7 +55,7 @@ public class DatabaseUtil {
                                  + "totalPrice REAL NOT NULL, "
                                  + "FOREIGN KEY(bookId) REFERENCES books(bookId)"
                                  + ");";
-                        
+
         String createToysTable = "CREATE TABLE IF NOT EXISTS toys ("
                                  + "id TEXT PRIMARY KEY, "
                                  + "name TEXT NOT NULL, "
@@ -63,14 +63,15 @@ public class DatabaseUtil {
                                  + "age_limit TEXT NOT NULL, "
                                  + "price REAL NOT NULL"
                                  + ");";
-                                 
+
         try (Connection conn = connect(); Statement stmt = conn.createStatement()) {
             stmt.execute(createBooksTable);
             stmt.execute(createAccountsTable);
             stmt.execute(createCustomersTable);
             stmt.execute(createEmployeesTable);
             stmt.execute(createOrdersTable);
-            System.out.println("Tables 'books', 'accounts', 'customers', 'employees', and 'orders' created or already exist.");
+            stmt.execute(createToysTable);
+            System.out.println("Tables 'books', 'accounts', 'customers', 'employees', 'toys' and 'orders' created or already exist.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -368,14 +369,7 @@ public class DatabaseUtil {
         return conn.createStatement().executeQuery(sql);
     }
 
-    public static ResultSet getOrdersByCustomer(String customer) throws SQLException {
-        Connection conn = connect();
-        String query = "SELECT * FROM orders WHERE customer = ?";
-        PreparedStatement stmt = conn.prepareStatement(query);
-        stmt.setString(1, customer);
-        return stmt.executeQuery();
-    }
-
+    
     public static ResultSet getAllBills() throws SQLException {
 
         Connection connection = DriverManager.getConnection("jdbc:your_database_url", "username", "password");
@@ -397,5 +391,13 @@ public class DatabaseUtil {
                 throw new SQLException("Book not found");
             }
         }
+    }
+
+    public static ResultSet getOrdersByCustomer(String customer) throws SQLException {
+        Connection conn = connect();
+        String query = "SELECT * FROM orders WHERE customer = ?";
+        PreparedStatement stmt = conn.prepareStatement(query);
+        stmt.setString(1, customer);
+        return stmt.executeQuery();
     }
 }

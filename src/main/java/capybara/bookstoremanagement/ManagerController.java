@@ -35,6 +35,19 @@ public class ManagerController {
         navigateToViewWithPrevious(event, "financial_report", "manager_view");
     }
 
+    @FXML
+    private void handleLogOut(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/capybara/bookstoremanagement/login.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root, 1080, 640));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void navigateToViewWithPrevious(ActionEvent event, String viewName, String previousView) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/capybara/bookstoremanagement/" + viewName + ".fxml"));

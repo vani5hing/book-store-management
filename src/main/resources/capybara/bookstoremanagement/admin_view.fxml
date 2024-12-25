@@ -22,5 +22,6 @@
             <Image url="@forecast.png" />
          </image>
       </ImageView>
+      <Button layoutX="704.0" layoutY="541.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="107.0" text="Log out" onAction="#handleLogOut"/>
    </children>
 </AnchorPane>

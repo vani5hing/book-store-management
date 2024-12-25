@@ -5,6 +5,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,6 +40,10 @@ public class ManageToysController extends ManageController {
     private TableColumn<Toy, Double> colPrice;
     @FXML
     private TableColumn<Toy, Integer> colStock;
+    @FXML
+    private TextField searchField;
+
+    private FilteredList<Toy> filteredToys;
 
     @FXML
     public void initialize() {
@@ -50,15 +58,32 @@ public class ManageToysController extends ManageController {
     }
 
     public void load() {
-        tableView.getItems().clear();
         try {
             ResultSet rs = DatabaseUtil.getAllToys();
+            ObservableList<Toy> toyList = FXCollections.observableArrayList();
             while (rs.next()) {
-                tableView.getItems().add(new Toy(rs.getString("id"), rs.getString("name"), rs.getString("origin"), rs.getString("age_limit"), rs.getDouble("price"), rs.getInt("stock"), rs.getDouble("cost")));
+                toyList.add(new Toy(rs.getString("id"), rs.getString("name"), rs.getString("origin"), rs.getString("age_limit"), rs.getDouble("price"), rs.getInt("stock"), rs.getDouble("cost")));
             }
+            filteredToys = new FilteredList<>(toyList, p -> true);
+            SortedList<Toy> sortedToys = new SortedList<>(filteredToys);
+            sortedToys.comparatorProperty().bind(tableView.comparatorProperty());
+            tableView.setItems(sortedToys);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    public void handleSearch() {
+        String searchText = searchField.getText().toLowerCase();
+        filteredToys.setPredicate(toy -> {
+            if (searchText == null || searchText.isEmpty()) {
+                return true;
+            }
+            return toy.getName().toLowerCase().contains(searchText) ||
+                   toy.getOrigin().toLowerCase().contains(searchText) ||
+                   toy.getId().toLowerCase().contains(searchText);
+        });
     }
 
     @FXML

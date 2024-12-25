@@ -5,8 +5,10 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="capybara.bookstoremanagement.ManageBooksController">
     <children>
-        <Label text="Manage Books" layoutX="20" layoutY="20"/>
-<TableView fx:id="tableView" layoutX="90" layoutY="60" prefWidth="1150" prefHeight="400">            <columns>
+        <!-- <Label text="Manage Books" layoutX="20" layoutY="20"/> -->
+        <TextField fx:id="searchField" promptText="Search..." layoutX="90" layoutY="20" onKeyReleased="#handleSearch"/>
+        <TableView fx:id="tableView" layoutX="90" layoutY="60" prefWidth="1150" prefHeight="400">            
+            <columns>
                 <TableColumn fx:id="colId" text="ID" prefWidth="200"/>
                 <TableColumn fx:id="colTitle" text="Title" prefWidth="400"/>
                 <TableColumn fx:id="colAuthor" text="Author" prefWidth="200"/>

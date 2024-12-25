@@ -5,6 +5,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,6 +40,10 @@ public class ManageStationeriesController extends ManageController {
     private TableColumn<Stationery, Double> colPrice;
     @FXML
     private TableColumn<Stationery, Integer> colStock;
+    @FXML
+    private TextField searchField;
+
+    private FilteredList<Stationery> filteredStationeries;
 
     @FXML
     public void initialize() {
@@ -50,15 +58,32 @@ public class ManageStationeriesController extends ManageController {
     }
 
     public void load() {
-        tableView.getItems().clear();
         try {
             ResultSet rs = DatabaseUtil.getAllStationeries();
+            ObservableList<Stationery> stationeryList = FXCollections.observableArrayList();
             while (rs.next()) {
-                tableView.getItems().add(new Stationery(rs.getString("id"), rs.getString("brand"), rs.getString("name"), rs.getString("origin"), rs.getDouble("price"), rs.getInt("stock"), rs.getDouble("cost")));
+                stationeryList.add(new Stationery(rs.getString("id"), rs.getString("brand"), rs.getString("name"), rs.getString("origin"), rs.getDouble("price"), rs.getInt("stock"), rs.getDouble("cost")));
             }
+            filteredStationeries = new FilteredList<>(stationeryList, p -> true);
+            SortedList<Stationery> sortedStationeries = new SortedList<>(filteredStationeries);
+            sortedStationeries.comparatorProperty().bind(tableView.comparatorProperty());
+            tableView.setItems(sortedStationeries);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    public void handleSearch() {
+        String searchText = searchField.getText().toLowerCase();
+        filteredStationeries.setPredicate(stationery -> {
+            if (searchText == null || searchText.isEmpty()) {
+                return true;
+            }
+            return stationery.getName().toLowerCase().contains(searchText) ||
+                   stationery.getBrand().toLowerCase().contains(searchText) ||
+                   stationery.getId().toLowerCase().contains(searchText);
+        });
     }
 
     @FXML

@@ -1,5 +1,9 @@
 package capybara.bookstoremanagement;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -42,6 +46,10 @@ public class ManageBooksController extends ManageController {
     private TableColumn<Book, Double> colPrice;
     @FXML
     private TableColumn<Book, Integer> colStock;
+    @FXML
+    private TextField searchField;
+
+    private FilteredList<Book> filteredBooks;
 
     @FXML
     public void initialize() {
@@ -58,15 +66,34 @@ public class ManageBooksController extends ManageController {
     }
 
     public void load() {
-        tableView.getItems().clear();
         try {
             ResultSet rs = DatabaseUtil.getAllBooks();
+            ObservableList<Book> bookList = FXCollections.observableArrayList();
             while (rs.next()) {
-                tableView.getItems().add(new Book(rs.getString("id"), rs.getString("title"), rs.getString("author"), rs.getInt("year"), rs.getString("genre"), rs.getString("publisher"), rs.getDouble("price"), rs.getInt("stock"), rs.getDouble("cost")));
+                bookList.add(new Book(rs.getString("id"), rs.getString("title"), rs.getString("author"), rs.getInt("year"), rs.getString("genre"), rs.getString("publisher"), rs.getDouble("price"), rs.getInt("stock"), rs.getDouble("cost")));
             }
+            filteredBooks = new FilteredList<>(bookList, p -> true);
+            SortedList<Book> sortedBooks = new SortedList<>(filteredBooks);
+            sortedBooks.comparatorProperty().bind(tableView.comparatorProperty());
+            tableView.setItems(sortedBooks);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    public void handleSearch() {
+        String searchText = searchField.getText().toLowerCase();
+        filteredBooks.setPredicate(book -> {
+            if (searchText == null || searchText.isEmpty()) {
+                return true;
+            }
+            return book.getTitle().toLowerCase().contains(searchText) ||
+                   book.getAuthor().toLowerCase().contains(searchText) ||
+                   book.getId().toLowerCase().contains(searchText) ||
+                   book.getGenre().toLowerCase().contains(searchText) ||
+                   book.getPublisher().toLowerCase().contains(searchText);
+        });
     }
 
     @FXML

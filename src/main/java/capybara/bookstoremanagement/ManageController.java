@@ -19,4 +19,5 @@ abstract class ManageController {
     public abstract void handleAdd(ActionEvent event);
     public abstract void handleDelete(ActionEvent event);
     public abstract void handleReturnToMenu(ActionEvent event);
+    public abstract void handleSearch();
 }

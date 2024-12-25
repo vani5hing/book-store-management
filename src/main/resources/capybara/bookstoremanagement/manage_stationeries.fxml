@@ -5,8 +5,9 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="capybara.bookstoremanagement.ManageStationeriesController">
     <children>
-        <Label text="Manage Stationeries" layoutX="20" layoutY="20"/>
-        <TableView fx:id="tableView" layoutX="20" layoutY="60" prefWidth="700" prefHeight="400">
+        <!-- <Label text="Manage Stationeries" layoutX="20" layoutY="20"/> -->
+        <TextField fx:id="searchField" promptText="Search..." layoutX="90" layoutY="20" onKeyReleased="#handleSearch"/>
+        <TableView fx:id="tableView" layoutX="20" layoutY="60" prefWidth="800" prefHeight="400">
             <columns>
                 <TableColumn fx:id="colId" text="ID" prefWidth="100"/>
                 <TableColumn fx:id="colBrand" text="Brand" prefWidth="100"/>

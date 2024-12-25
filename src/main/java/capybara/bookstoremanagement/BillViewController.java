@@ -1,7 +1,6 @@
 package capybara.bookstoremanagement;
 
 import javafx.fxml.FXML;
-import javafx.print.PrinterJob;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
@@ -33,7 +32,7 @@ public class BillViewController {
             booksText.append("Book ID: ").append(entry.getKey()).append(", Title: ").append(bookTitle).append(", Quantity: ").append(entry.getValue()).append("\n");
         }
         booksTextArea.setText(booksText.toString());
-        totalPriceLabel.setText("Total Price: €" + String.format("%.2f", bill.getTotalPrice()).replace('.', ','));
+        totalPriceLabel.setText("Total Price: $" + String.format("%.2f", bill.getTotalPrice()).replace('.', ','));
     }
 
     @FXML
@@ -42,10 +41,12 @@ public class BillViewController {
         if (!billsDir.exists()) {
             billsDir.mkdir();
         }
-        String fileNameTxt = "bills/" + bill.getCustomer() + "_bill.txt";
+        String sanitizedTimeCreated = bill.getTimeCreated().replace(":", "-").replace(" ", "_");
+        String fileNameTxt = "bills/" + bill.getCustomer() + "_" + sanitizedTimeCreated + "_bill.txt";
         try (FileWriter writer = new FileWriter(fileNameTxt)) {
-            writer.write("Bill for customer: " + bill.getCustomer() + "\n");
-            writer.write("Books:\n");
+            writer.write("Bill for customer: " + bill.getCustomer() + "\n" +
+                    "Time created: " + bill.getTimeCreated() + "\n" +
+                    "Books:\n");
             for (Map.Entry<String, Integer> entry : bill.getBooks().entrySet()) {
                 String bookTitle = bill.getBookTitles().get(entry.getKey());
                 writer.write("ID: " + entry.getKey() + ", Title: " + bookTitle + ", Quantity: " + entry.getValue() + "\n");

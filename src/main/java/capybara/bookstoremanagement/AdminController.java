@@ -31,6 +31,11 @@ public class AdminController {
         navigateToViewWithPrevious(event, "manage_orders", "admin_view");
     }
 
+    @FXML
+    private void handleFinancialAnalysis(ActionEvent event) {
+        navigateToViewWithPrevious(event, "financial_report", "admin_view");
+    }
+
     // private void navigateToView(ActionEvent event, String viewName) {
     //     try {
     //         Parent root = FXMLLoader.load(getClass().getResource(viewName + ".fxml"));
@@ -44,7 +49,7 @@ public class AdminController {
 
     private void navigateToViewWithPrevious(ActionEvent event, String viewName, String previousView) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(viewName + ".fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/capybara/bookstoremanagement/" + viewName + ".fxml"));
             Parent root = loader.load();
             Object controller = loader.getController();
             if (controller instanceof ManageItemsController) {

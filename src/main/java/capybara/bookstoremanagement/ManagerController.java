@@ -15,13 +15,20 @@ public class ManagerController {
         navigateToViewWithPrevious(event, "manage_employees", "manager_view");
     }
 
+    @FXML
+    private void handleFinancialAnalysis(ActionEvent event) {
+        navigateToViewWithPrevious(event, "financial_report", "manager_view");
+    }
+
     private void navigateToViewWithPrevious(ActionEvent event, String viewName, String previousView) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(viewName + ".fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/capybara/bookstoremanagement/" + viewName + ".fxml"));
             Parent root = loader.load();
             Object controller = loader.getController();
             if (controller instanceof ManageEmployeesController) {
                 ((ManageEmployeesController) controller).setPreviousView(previousView);
+            } else if (controller instanceof FinancialReportController) {
+                ((FinancialReportController) controller).setPreviousView(previousView);
             }
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 640, 540));

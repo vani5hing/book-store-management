@@ -41,6 +41,8 @@ public class ManageOrdersController {
     private TableColumn<Order, String> colQuantities;
     @FXML
     private TableColumn<Order, Double> colTotalPrice;
+    @FXML
+    private TableColumn<Order, String> colTimeCreated;
 
     @FXML
     public void initialize() {
@@ -49,6 +51,7 @@ public class ManageOrdersController {
         colBooks.setCellValueFactory(new PropertyValueFactory<>("booksFormatted"));
         colQuantities.setCellValueFactory(new PropertyValueFactory<>("quantitiesFormatted"));
         colTotalPrice.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
+        colTimeCreated.setCellValueFactory(new PropertyValueFactory<>("timeCreated"));
 
         loadOrders();
     }
@@ -60,7 +63,7 @@ public class ManageOrdersController {
             while (rs.next()) {
                 Map<String, Integer> books = new HashMap<>();
                 books.put(rs.getString("bookId"), rs.getInt("quantity"));
-                tableView.getItems().add(new Order(rs.getInt("id"), rs.getString("customer"), books, rs.getDouble("totalPrice")));
+                tableView.getItems().add(new Order(rs.getInt("id"), rs.getString("customer"), books, rs.getDouble("totalPrice"), rs.getString("timeCreated")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -144,7 +147,7 @@ public class ManageOrdersController {
                     books.put(bookId, quantity);
                 }
                 double totalPrice = calculateTotalPrice(books);
-                return new Order(0, customer, books, totalPrice);
+                return new Order(0, customer, books, totalPrice, java.time.LocalDateTime.now().toString());
             }
             return null;
         });
@@ -154,7 +157,7 @@ public class ManageOrdersController {
             try {
                 DatabaseUtil.createOrder(order.getCustomer(), order.getBooks(), order.getTotalPrice());
                 loadOrders();
-                Bill bill = generateBillForCustomer(order.getCustomer());
+                Bill bill = generateBillForCustomer(order.getCustomer(), order.getTimeCreated());
                 displayBill(bill);
             } catch (SQLException | IOException e) {
                 e.printStackTrace();
@@ -234,7 +237,7 @@ public class ManageOrdersController {
                         books.put(bookId, quantity);
                     }
                     double totalPrice = calculateTotalPrice(books);
-                    return new Order(selectedOrder.getId(), customer, books, totalPrice);
+                    return new Order(selectedOrder.getId(), customer, books, totalPrice, java.time.LocalDateTime.now().toString());
                 }
                 return null;
             });
@@ -285,22 +288,30 @@ public class ManageOrdersController {
     private void handleGenerateBill(ActionEvent event) {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Generate Bill");
-        dialog.setHeaderText("Enter the customer name to generate the bill");
+        dialog.setHeaderText("Enter the customer name and time created to generate the bill");
         dialog.setContentText("Customer:");
 
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(customer -> {
-            try {
-                Bill bill = generateBillForCustomer(customer);
-                displayBill(bill);
-            } catch (SQLException | IOException e) {
-                e.printStackTrace();
-            }
+            TextInputDialog timeDialog = new TextInputDialog();
+            timeDialog.setTitle("Generate Bill");
+            timeDialog.setHeaderText("Enter the time created to generate the bill");
+            timeDialog.setContentText("Time Created:");
+
+            Optional<String> timeResult = timeDialog.showAndWait();
+            timeResult.ifPresent(timeCreated -> {
+                try {
+                    Bill bill = generateBillForCustomer(customer, timeCreated);
+                    displayBill(bill);
+                } catch (SQLException | IOException e) {
+                    e.printStackTrace();
+                }
+            });
         });
     }
 
-    private Bill generateBillForCustomer(String customer) throws SQLException {
-        ResultSet rs = DatabaseUtil.getOrdersByCustomer(customer);
+    private Bill generateBillForCustomer(String customer, String timeCreated) throws SQLException {
+        ResultSet rs = DatabaseUtil.getOrdersByCustomerAndTime(customer, timeCreated);
         Map<String, Integer> books = new HashMap<>();
         Map<String, String> bookTitles = new HashMap<>();
         double totalPrice = 0.0;
@@ -313,7 +324,7 @@ public class ManageOrdersController {
             totalPrice += DatabaseUtil.getBookPriceById(bookId) * quantity;
         }
 
-        return new Bill(customer, books, bookTitles, totalPrice);
+        return new Bill(customer, books, bookTitles, totalPrice, timeCreated);
     }
 
     private void displayBill(Bill bill) throws IOException {

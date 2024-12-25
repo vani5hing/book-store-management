@@ -6,12 +6,8 @@
 <VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="capybara.bookstoremanagement.BillViewController">
     <children>
         <Label fx:id="customerLabel" text="Customer: " />
-        <TextArea fx:id="booksTextArea" editable="false" prefHeight="200" />
+        <TextArea fx:id="booksTextArea" editable="false" wrapText="true" prefHeight="200" />
         <Label fx:id="totalPriceLabel" text="Total Price: " />
-        <HBox spacing="10">
-            <children>
-                <Button text="Print" onAction="#handleSaveAsPDF" />
-            </children>
-        </HBox>
+        <Button text="Print" onAction="#handleSaveAsPDF" />
     </children>
 </VBox>

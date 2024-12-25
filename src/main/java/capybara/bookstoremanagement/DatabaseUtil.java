@@ -234,7 +234,7 @@ public class DatabaseUtil {
     }
 
     public static void createOrder(String customer, Map<String, Integer> books, double totalPrice) throws SQLException {
-        String sql = "INSERT INTO orders(customer, bookId, quantity, totalPrice) VALUES(?, ?, ?, ?)";
+        String sql = "INSERT INTO orders(customer, bookId, quantity, totalPrice, timeCreated) VALUES(?, ?, ?, ?, datetime('now'))";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             for (Map.Entry<String, Integer> entry : books.entrySet()) {
                 pstmt.setString(1, customer);
@@ -249,7 +249,7 @@ public class DatabaseUtil {
 
     public static void updateOrder(int id, String customer, Map<String, Integer> books, double totalPrice) throws SQLException {
         String deleteSql = "DELETE FROM orders WHERE id = ?";
-        String insertSql = "INSERT INTO orders(id, customer, bookId, quantity, totalPrice) VALUES(?, ?, ?, ?, ?)";
+        String insertSql = "INSERT INTO orders(id, customer, bookId, quantity, totalPrice, timeCreated) VALUES(?, ?, ?, ?, ?, datetime('now'))";
         try (Connection conn = connect(); 
              PreparedStatement deletePstmt = conn.prepareStatement(deleteSql);
              PreparedStatement insertPstmt = conn.prepareStatement(insertSql)) {
@@ -398,6 +398,88 @@ public class DatabaseUtil {
         PreparedStatement stmt = conn.prepareStatement(query);
         stmt.setString(1, customer);
         return stmt.executeQuery();
+    }
+    public static double getTotalRevenue() throws SQLException {
+        String sql = "SELECT SUM(totalPrice) FROM orders";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+            return 0;
+        }
+    }
+
+    public static double getTotalCost() throws SQLException {
+        String sql = "SELECT SUM(price * quantity) FROM books";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+            return 0;
+        }
+    }
+
+    public static double getOperationalCost() throws SQLException {
+        String sql = "SELECT SUM(salary) FROM employees";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+            return 0;
+        }
+    }  
+
+    public static double getBookRevenue() throws SQLException {
+        String sql = "SELECT SUM(price * 1.20) FROM books";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+            return 0;
+        }
+    }
+
+    public static double getToyRevenue() throws SQLException {
+        String sql = "SELECT SUM(price * 1.35) FROM toys";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+            return 0;
+        }
+    }
+
+    public static double getStationaryRevenue() throws SQLException {
+        String sql = "SELECT SUM(price * 1.10) FROM stationeries";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+            return 0;
+        }
+    }
+
+    public static ResultSet getOrdersByCustomerAndTime(String customer, String timeCreated) throws SQLException {
+        String sql = "SELECT * FROM orders WHERE customer = ? AND timeCreated = ?";
+        Connection conn = connect();
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, customer);
+        pstmt.setString(2, timeCreated);
+        return pstmt.executeQuery();
+    }
+
+    public static ResultSet getMostRecentOrdersByCustomer(String customer) throws SQLException {
+        String sql = "SELECT * FROM orders WHERE customer = ? ORDER BY timeCreated DESC";
+        Connection conn = connect();
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, customer);
+        return pstmt.executeQuery();
     }
 
 }

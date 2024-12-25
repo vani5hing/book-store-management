@@ -63,6 +63,14 @@ public class DatabaseUtil {
                                  + "age_limit TEXT NOT NULL, "
                                  + "price REAL NOT NULL"
                                  + ");";
+        
+        String createStationeriesTable = "CREATE TABLE IF NOT EXISTS stationeries ("
+                                 + "id TEXT PRIMARY KEY, "
+                                 + "brand TEXT NOT NULL, "
+                                 + "name TEXT NOT NULL, "
+                                 + "origin TEXT NOT NULL, "
+                                 + "price REAL NOT NULL"
+                                 + ");";
 
         try (Connection conn = connect(); Statement stmt = conn.createStatement()) {
             stmt.execute(createBooksTable);
@@ -71,7 +79,8 @@ public class DatabaseUtil {
             stmt.execute(createEmployeesTable);
             stmt.execute(createOrdersTable);
             stmt.execute(createToysTable);
-            System.out.println("Tables 'books', 'accounts', 'customers', 'employees', 'toys' and 'orders' created or already exist.");
+            stmt.execute(createStationeriesTable);
+            System.out.println("Tables 'books', 'accounts', 'customers', 'employees', 'toys', 'stationeries' and 'orders' created or already exist.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -363,6 +372,25 @@ public class DatabaseUtil {
         }
     }
 
+    public static String generateUniqueStationeryId() throws SQLException {
+        Random random = new Random();
+        String stationeryId;
+        do {
+            stationeryId = String.format("ST-%04d-%c", random.nextInt(10000), (char) (random.nextInt(26) + 'A'));
+        } while (isStationeryIdExists(stationeryId));
+        return stationeryId;
+    }
+
+    private static boolean isStationeryIdExists(String stationeryId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM stationeries WHERE id = ?";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, stationeryId);
+            ResultSet rs = pstmt.executeQuery();
+            rs.next();
+            return rs.getInt(1) > 0;
+        }
+    }
+
     public static ResultSet getAllToys() throws SQLException {
         String sql = "SELECT * FROM toys";
         Connection conn = connect();
@@ -400,4 +428,29 @@ public class DatabaseUtil {
         return stmt.executeQuery();
     }
 
+    public static void createStationery(String id, String brand, String name, String origin, double price) throws SQLException {
+        String sql = "INSERT INTO stationeries(id, brand, name, origin, price) VALUES(?, ?, ?, ?, ?)";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, id);
+            pstmt.setString(2, brand);
+            pstmt.setString(3, name);
+            pstmt.setString(4, origin);
+            pstmt.setDouble(5, price);
+            pstmt.executeUpdate();
+        }
+    }
+
+    public static void deleteStationery(String id) throws SQLException {
+        String sql = "DELETE FROM stationeries WHERE id = ?";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, id);
+            pstmt.executeUpdate();
+        }
+    }
+
+    public static ResultSet getAllStationeries() throws SQLException {
+        String sql = "SELECT * FROM stationeries";
+        Connection conn = connect();
+        return conn.createStatement().executeQuery(sql);
+    }
 }

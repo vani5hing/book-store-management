@@ -69,7 +69,7 @@ public class FinancialReport {
 
     public static List<Map<String, Object>> loadTable(String tableName) {
         List<Map<String, Object>> data = new ArrayList<>();
-        String url = "jdbc:sqlite:your_database_file_path_here";
+        String url = "jdbc:sqlite:books.db";
 
         try (Connection conn = DriverManager.getConnection(url);
              Statement stmt = conn.createStatement();

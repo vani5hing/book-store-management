@@ -81,6 +81,8 @@ public class AdminController {
                 ((ManageOrdersController) controller).setPreviousView(previousView);
             } else if (controller instanceof ManageAccountController) {
                 ((ManageAccountController) controller).setPreviousView(previousView);
+            } else if (controller instanceof FinancialReportController) {
+                ((FinancialReportController) controller).setPreviousView(previousView);
             }
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 1080, 640));

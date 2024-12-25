@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="capybara.bookstoremanagement.FinancialReportController">
+    <children>
+        <VBox spacing="10" alignment="TOP_CENTER" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0">
+            <Label text="Financial Report" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+            <HBox spacing="20" alignment="CENTER">
+                <VBox spacing="10">
+                    <Label fx:id="revenueLabel" text="Revenue: $0.00" />
+                    <Label fx:id="grossProfitLabel" text="Gross Profit: $0.00" />
+                    <Label fx:id="netProfitLabel" text="Net Profit: $0.00" />
+                </VBox>
+                <PieChart fx:id="pieChart" prefWidth="300" prefHeight="300" />
+            </HBox>
+            <BarChart fx:id="barChart" prefWidth="600" prefHeight="400">
+                <xAxis>
+                    <CategoryAxis fx:id="xAxis" label="Metrics" />
+                </xAxis>
+                <yAxis>
+                    <NumberAxis fx:id="yAxis" label="Amount" />
+                </yAxis>
+            </BarChart>
+            <Button text="Return to Menu" onAction="#handleReturnToMenu" style="-fx-font-size: 14px;" />
+        </VBox>
+    </children>
+</AnchorPane>

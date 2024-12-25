@@ -23,14 +23,7 @@ public class ManageItemsController {
 
     @FXML
     private void handleManageToys(ActionEvent event) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("manage_toys.fxml"));
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 640, 540));
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        navigateToViewWithPrevious(event, "manage_toys", previousView);
     }
 
     @FXML
@@ -49,9 +42,15 @@ public class ManageItemsController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(viewName + ".fxml"));
             Parent root = loader.load();
-            ManageBooksController controller = loader.getController();
-            controller.setPreviousView("manage_items");
-            controller.setPreviousViewOfManageItems(previousView);
+            if (viewName.equals("manage_books")) {
+                ManageBooksController controller = loader.getController();
+                controller.setPreviousView("manage_items");
+                controller.setPreviousViewOfManageItems(previousView);
+            } else if (viewName.equals("manage_toys")) {
+                ManageToysController controller = loader.getController();
+                controller.setPreviousView("manage_items");
+                controller.setPreviousViewOfManageItems(previousView);
+            }
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 640, 540));
             stage.show();

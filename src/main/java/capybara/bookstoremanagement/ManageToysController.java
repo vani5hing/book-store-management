@@ -35,6 +35,17 @@ public class ManageToysController {
     @FXML
     private TableColumn<Toy, Double> colPrice;
 
+    private String previousView;
+    private String previousViewOfManageItems;
+
+    public void setPreviousView(String previousView) {
+        this.previousView = previousView;
+    }
+
+    public void setPreviousViewOfManageItems(String previousViewOfManageItems) {
+        this.previousViewOfManageItems = previousViewOfManageItems;
+    }
+
     @FXML
     public void initialize() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -143,7 +154,10 @@ public class ManageToysController {
     @FXML
     private void handleReturnToMenu(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("manage_items.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(previousView + ".fxml"));
+            Parent root = loader.load();
+            ManageItemsController controller = loader.getController();
+            controller.setPreviousView(previousViewOfManageItems);
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 640, 540));
             stage.show();

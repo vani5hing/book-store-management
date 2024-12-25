@@ -1,5 +1,6 @@
 package capybara.bookstoremanagement;
 
+import java.sql.SQLException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -10,7 +11,6 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;

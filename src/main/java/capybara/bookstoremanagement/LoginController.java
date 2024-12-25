@@ -1,13 +1,14 @@
 package capybara.bookstoremanagement;
 
 import java.io.IOException;
+
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class LoginController {
@@ -95,7 +96,7 @@ public class LoginController {
     }
 
     private boolean isValidCredentials(String username, String password) {
-        return DatabaseUtil.validateUser(username, password);
+        return DatabaseUtil.validateAccount(username, password);
     }
 
     private String getUserRole(String username) {

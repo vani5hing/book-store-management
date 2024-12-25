@@ -33,7 +33,7 @@ public class DatabaseUtil {
                                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                                 + "username TEXT NOT NULL UNIQUE, "
                                 + "password TEXT NOT NULL, "
-                                + "role TEXT NOT NULL CHECK(role IN ('admin', 'manager', 'employee'))"
+                                + "role TEXT NOT NULL"
                                 + ");";
 
         String createCustomersTable = "CREATE TABLE IF NOT EXISTS customers ("
@@ -91,7 +91,7 @@ public class DatabaseUtil {
         }
     }
 
-    public static boolean validateUser(String username, String password) {
+    public static boolean validateAccount(String username, String password) {
         String sql = "SELECT * FROM accounts WHERE username = ? AND password = ?";
 
         try (Connection conn = connect();
@@ -107,21 +107,7 @@ public class DatabaseUtil {
         }
     }
 
-    public static boolean addUser(String username, String password) {
-        String sql = "INSERT INTO accounts(username, password) VALUES(?, ?)";
-        try (Connection conn = connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
-            pstmt.executeUpdate();
-            return true;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            return false;
-        }
-    }
-
-    public static boolean createUser(String username, String password, String role) {
+    public static void createAccount(String username, String password, String role) throws SQLException {
         String sql = "INSERT INTO accounts(username, password, role) VALUES(?, ?, ?)";
         try (Connection conn = connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -129,15 +115,11 @@ public class DatabaseUtil {
             pstmt.setString(2, password);
             pstmt.setString(3, role);
             pstmt.executeUpdate();
-            return true;
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            return false;
-        }
+        } 
     }
 
-    public static void updateUser(String username, String password, String role, int id) throws SQLException {
-        String sql = "UPDATE employees SET username = ?, password = ?, role = ? WHERE id = ?";
+    public static void updateAccount(int id, String username, String password, String role) throws SQLException {
+        String sql = "UPDATE accounts SET username = ?, password = ?, role = ? WHERE id = ?";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
             pstmt.setString(2, password);
@@ -147,15 +129,15 @@ public class DatabaseUtil {
         }
     }
 
-    public static void deleteUser(int id) throws SQLException {
-        String sql = "DELETE FROM employees WHERE id = ?";
+    public static void deleteAccount(int id) throws SQLException {
+        String sql = "DELETE FROM accounts WHERE id = ?";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
         }
     }
 
-    public static ResultSet getAllUser() throws SQLException {
+    public static ResultSet getAllAccounts() throws SQLException {
         String sql = "SELECT * FROM accounts";
         Connection conn = connect();
         return conn.createStatement().executeQuery(sql);

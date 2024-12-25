@@ -12,7 +12,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.GridPane;
-
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -4,9 +4,8 @@
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns:fx="http://javafx.com/fxml" fx:controller="capybara.bookstoremanagement.EmployeeController" spacing="10" alignment="CENTER" style="-fx-padding: 20;">
-    <!-- <Label text="Employee View" /> -->
-    <!-- Add manage books, customers, and orders functions here -->
-    <Button text="Manage Customers" onAction="#handleManageCustomers" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;"/>
-    <Button text="Manage Items" onAction="#handleManageItems" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;"/>
-    <Button text="Manage Orders" onAction="#handleManageOrders" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;"/>
+    <Label fx:id="greetingLabel" style="-fx-font-size: 16px; -fx-padding: 10;" />
+    <Button text="Manage Customers" onAction="#handleManageCustomers" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;" />
+    <Button text="Manage Items" onAction="#handleManageItems" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;" />
+    <Button text="Manage Orders" onAction="#handleManageOrders" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;" />
 </VBox>

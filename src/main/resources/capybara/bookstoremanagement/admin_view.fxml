@@ -17,5 +17,11 @@
        <Button layoutX="462.0" layoutY="263.0" onAction="#handleManageCustomers" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;" text="Manage Customers" />
        <Button layoutX="462.0" layoutY="320.0" onAction="#handleManageItems" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;" text="Manage Items" />
        <Button layoutX="462.0" layoutY="381.0" onAction="#handleManageEmployees" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;" text="Manage Employees" />
+      <ImageView fitHeight="291.0" fitWidth="326.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@forecast.png" />
+         </image>
+      </ImageView>
+      <Button layoutX="704.0" layoutY="541.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="107.0" text="Log out" onAction="#handleLogOut"/>
    </children>
 </AnchorPane>

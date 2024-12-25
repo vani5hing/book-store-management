@@ -3,20 +3,27 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="capybara.bookstoremanagement.ManageOrdersController">
-    <TableView fx:id="tableView">
-        <columns>
-            <TableColumn fx:id="colId" text="ID"/>
-            <TableColumn fx:id="colCustomer" text="Customer Phone"/>
-            <TableColumn fx:id="colItemid" text="Item ID"/>
-            <TableColumn fx:id="colQuantity" text="Quantity"/>
-            <TableColumn fx:id="colTotalPrice" text="Total Price"/>
-            <TableColumn fx:id="colTimeCreated" text="Time Created"/>
-        </columns>
-    </TableView>
-    <Button text="Add Order" onAction="#handleAddOrder"/>
-    <Button text="Edit Order" onAction="#handleEditOrder"/>
-    <Button text="Delete Order" onAction="#handleDeleteOrder"/>
-    <Button text="Return to Menu" onAction="#handleReturnToMenu"/>
-    <Button text="Generate Bill" onAction="#handleGenerateBill"/>
-</VBox>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="capybara.bookstoremanagement.ManageOrdersController">
+    <children>
+        <TextField fx:id="searchField" promptText="Search..." layoutX="90" layoutY="20" onKeyReleased="#handleSearch"/>
+        <TableView fx:id="tableView" layoutX="90" layoutY="60" prefWidth="900" prefHeight="400">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="100"/>
+                <TableColumn fx:id="colCustomer" text="Customer Phone" prefWidth="200"/>
+                <TableColumn fx:id="colItemid" text="Item ID" prefWidth="100"/>
+                <TableColumn fx:id="colQuantity" text="Quantity" prefWidth="100"/>
+                <TableColumn fx:id="colTotalPrice" text="Total Price" prefWidth="200"/>
+                <TableColumn fx:id="colTimeCreated" text="Time Created" prefWidth="200"/>
+            </columns>
+        </TableView>
+        <HBox layoutX="90" layoutY="480" spacing="20">
+            <children>
+                <Button text="Add Order" onAction="#handleAddOrder"/>
+                <Button text="Edit Order" onAction="#handleEditOrder"/>
+                <Button text="Delete Order" onAction="#handleDeleteOrder"/>
+                <Button text="Generate Bill" onAction="#handleGenerateBill"/>
+                <Button text="Return to Menu" onAction="#handleReturnToMenu"/>
+            </children>
+        </HBox>
+    </children>
+</AnchorPane>

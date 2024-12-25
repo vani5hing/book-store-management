@@ -16,5 +16,6 @@
        <Button layoutX="462.0" layoutY="282.0" onAction="#handleManageItems" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;" text="Manage Items" />
        <Button layoutX="462.0" layoutY="231.0" onAction="#handleManageEmployees" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;" text="Manage Employees" />
        <Button layoutX="462.0" layoutY="389.0" onAction="#handleFinancialAnalysis" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;" text="Financial Analysis" />
+      <Button layoutX="678.0" layoutY="516.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="120.0" text="Log out" onAction="#handleLogOut" />
    </children>
 </AnchorPane>

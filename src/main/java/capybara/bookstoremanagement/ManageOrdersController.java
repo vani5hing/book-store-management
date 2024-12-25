@@ -1,5 +1,7 @@
 package capybara.bookstoremanagement;
 
+import java.text.ParseException;
+import java.text.NumberFormat;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,17 +14,17 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 
 public class ManageOrdersController {
     private String previousView;
@@ -45,11 +47,15 @@ public class ManageOrdersController {
     private TableColumn<Order, Double> colTotalPrice;
     @FXML
     private TableColumn<Order, String> colTimeCreated;
+    @FXML
+    private TextField searchField;
+
+    private FilteredList<Order> filteredOrders;
 
     private void loadOrders() {
-        tableView.getItems().clear();
         try {
             ResultSet rs = DatabaseUtil.getAllOrders();
+            ObservableList<Order> orderList = FXCollections.observableArrayList();
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String customer = rs.getString("customer");
@@ -58,9 +64,12 @@ public class ManageOrdersController {
                 double totalPrice = Math.round(rs.getDouble("totalPrice") * 10.0) / 10.0;
                 String timeCreated = rs.getString("timeCreated");
 
-                Order order = new Order(id, customer, itemid, quantity, totalPrice, timeCreated);
-                tableView.getItems().add(order);
+                orderList.add(new Order(id, customer, itemid, quantity, totalPrice, timeCreated));
             }
+            filteredOrders = new FilteredList<>(orderList, p -> true);
+            SortedList<Order> sortedOrders = new SortedList<>(filteredOrders);
+            sortedOrders.comparatorProperty().bind(tableView.comparatorProperty());
+            tableView.setItems(sortedOrders);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -76,6 +85,19 @@ public class ManageOrdersController {
         colTimeCreated.setCellValueFactory(new PropertyValueFactory<>("timeCreated"));
 
         loadOrders();
+    }
+
+    @FXML
+    public void handleSearch() {
+        String searchText = searchField.getText().toLowerCase();
+        filteredOrders.setPredicate(order -> {
+            if (searchText == null || searchText.isEmpty()) {
+                return true;
+            }
+            return order.getCustomer().toLowerCase().contains(searchText) ||
+                   order.getItemid().toLowerCase().contains(searchText) ||
+                   String.valueOf(order.getId()).contains(searchText);
+        });
     }
 
     @FXML

@@ -55,8 +55,7 @@ public class DatabaseUtil {
                                  + "totalPrice REAL NOT NULL, "
                                  + "FOREIGN KEY(bookId) REFERENCES books(bookId)"
                                  + ");";
-                                 
-    
+                        
         String createToysTable = "CREATE TABLE IF NOT EXISTS toys ("
                                  + "id TEXT PRIMARY KEY, "
                                  + "name TEXT NOT NULL, "
@@ -64,6 +63,7 @@ public class DatabaseUtil {
                                  + "age_limit TEXT NOT NULL, "
                                  + "price REAL NOT NULL"
                                  + ");";
+                                 
         try (Connection conn = connect(); Statement stmt = conn.createStatement()) {
             stmt.execute(createBooksTable);
             stmt.execute(createAccountsTable);
@@ -323,36 +323,6 @@ public class DatabaseUtil {
         }
     }
 
-    public static ResultSet getOrdersByCustomer(String customer) throws SQLException {
-        Connection conn = connect();
-        String query = "SELECT * FROM orders WHERE customer = ?";
-        PreparedStatement stmt = conn.prepareStatement(query);
-        stmt.setString(1, customer);
-        return stmt.executeQuery();
-    }
-
-    public static ResultSet getAllBills() throws SQLException {
-
-        Connection connection = DriverManager.getConnection("jdbc:your_database_url", "username", "password");
-
-        Statement statement = connection.createStatement();
-
-        return statement.executeQuery("SELECT * FROM bills");
-
-    }
-
-    public static String getBookTitleById(String bookId) throws SQLException {
-        String sql = "SELECT title FROM books WHERE bookId = ?";
-        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, bookId);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getString("title");
-            } else {
-                throw new SQLException("Book not found");
-            }
-        }
-    }
     public static void createToy(String id, String name, String origin, String ageLimit, double price) throws SQLException {
         String sql = "INSERT INTO toys(id, name, origin, age_limit, price) VALUES(?, ?, ?, ?, ?)";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -396,5 +366,36 @@ public class DatabaseUtil {
         String sql = "SELECT * FROM toys";
         Connection conn = connect();
         return conn.createStatement().executeQuery(sql);
+    }
+
+    public static ResultSet getOrdersByCustomer(String customer) throws SQLException {
+        Connection conn = connect();
+        String query = "SELECT * FROM orders WHERE customer = ?";
+        PreparedStatement stmt = conn.prepareStatement(query);
+        stmt.setString(1, customer);
+        return stmt.executeQuery();
+    }
+
+    public static ResultSet getAllBills() throws SQLException {
+
+        Connection connection = DriverManager.getConnection("jdbc:your_database_url", "username", "password");
+
+        Statement statement = connection.createStatement();
+
+        return statement.executeQuery("SELECT * FROM bills");
+
+    }
+
+    public static String getBookTitleById(String bookId) throws SQLException {
+        String sql = "SELECT title FROM books WHERE bookId = ?";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, bookId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("title");
+            } else {
+                throw new SQLException("Book not found");
+            }
+        }
     }
 }

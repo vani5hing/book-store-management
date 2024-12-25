@@ -1,30 +1,24 @@
 package capybara.bookstoremanagement;
 
 public class Toy extends Item {
-    private int id;
-    private String brand;
-    private int suitableAge;
+    private String id;
+    private String ageLimit;
 
     public Toy(String name, String origin, double price, int quantity) {
         super(name, origin, price, quantity);
     }
 
-    public Toy(int id, String brand, int suitableAge, String name, String origin, double price, int quantity) {
-        super(name, origin, price, quantity);
+    public Toy(String id, String name, String origin, String ageLimit, double price) {
+        super(name, origin, price, 0);
         this.id = id;
-        this.brand = brand;
-        this.suitableAge = suitableAge;
+        this.ageLimit = ageLimit;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public String getBrand() {
-        return brand;
-    }
-
-    public int getSuitableAge() {
-        return suitableAge;
+    public String getAgeLimit() {
+        return ageLimit;
     }
 }

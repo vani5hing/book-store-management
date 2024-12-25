@@ -27,6 +27,18 @@ public class ManageItemsController {
     }
 
     @FXML
+    private void handleManageToys(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("manage_toys.fxml"));
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root, 640, 540));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void handleReturnToMenu(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));

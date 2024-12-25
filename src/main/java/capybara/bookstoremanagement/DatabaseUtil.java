@@ -369,7 +369,6 @@ public class DatabaseUtil {
         return conn.createStatement().executeQuery(sql);
     }
 
-    
     public static ResultSet getAllBills() throws SQLException {
 
         Connection connection = DriverManager.getConnection("jdbc:your_database_url", "username", "password");
@@ -400,4 +399,5 @@ public class DatabaseUtil {
         stmt.setString(1, customer);
         return stmt.executeQuery();
     }
+
 }

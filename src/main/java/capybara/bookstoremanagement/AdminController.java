@@ -13,27 +13,49 @@ public class AdminController {
 
     @FXML
     private void handleManageEmployees(ActionEvent event) {
-        navigateToView(event, "manage_employees");
+        navigateToViewWithPrevious(event, "manage_employees", "admin_view");
     }
 
     @FXML
     private void handleManageItems(ActionEvent event) {
-        navigateToView(event, "manage_items");
+        navigateToViewWithPrevious(event, "manage_items", "admin_view");
     }
 
     @FXML
     private void handleManageCustomers(ActionEvent event) {
-        navigateToView(event, "manage_customers");
+        navigateToViewWithPrevious(event, "manage_customers", "admin_view");
     }
 
     @FXML
     private void handleManageOrders(ActionEvent event) {
-        navigateToView(event, "manage_orders");
+        navigateToViewWithPrevious(event, "manage_orders", "admin_view");
     }
 
-    private void navigateToView(ActionEvent event, String viewName) {
+    // private void navigateToView(ActionEvent event, String viewName) {
+    //     try {
+    //         Parent root = FXMLLoader.load(getClass().getResource(viewName + ".fxml"));
+    //         Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+    //         stage.setScene(new Scene(root, 640, 540));
+    //         stage.show();
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
+
+    private void navigateToViewWithPrevious(ActionEvent event, String viewName, String previousView) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource(viewName + ".fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(viewName + ".fxml"));
+            Parent root = loader.load();
+            Object controller = loader.getController();
+            if (controller instanceof ManageItemsController) {
+                ((ManageItemsController) controller).setPreviousView(previousView);
+            } else if (controller instanceof ManageCustomersController) {
+                ((ManageCustomersController) controller).setPreviousView(previousView);
+            } else if (controller instanceof ManageEmployeesController) {
+                ((ManageEmployeesController) controller).setPreviousView(previousView);
+            } else if (controller instanceof ManageOrdersController) {
+                ((ManageOrdersController) controller).setPreviousView(previousView);
+            }
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 640, 540));
             stage.show();

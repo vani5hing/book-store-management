@@ -22,6 +22,12 @@ import java.util.Map;
 import java.util.Optional;
 
 public class ManageOrdersController {
+    private String previousView;
+
+    public void setPreviousView(String previousView) {
+        this.previousView = previousView;
+    }
+
 
     @FXML
     private TableView<Order> tableView;
@@ -266,7 +272,7 @@ public class ManageOrdersController {
     @FXML
     private void handleReturnToMenu(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource(previousView + ".fxml"));
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 640, 540));
             stage.show();

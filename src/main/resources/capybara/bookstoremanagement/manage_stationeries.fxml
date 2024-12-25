@@ -6,19 +6,20 @@
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="capybara.bookstoremanagement.ManageStationeriesController">
     <children>
         <Label text="Manage Stationeries" layoutX="20" layoutY="20"/>
-        <TableView fx:id="tableView" layoutX="20" layoutY="60" prefWidth="600" prefHeight="400">
+        <TableView fx:id="tableView" layoutX="20" layoutY="60" prefWidth="700" prefHeight="400">
             <columns>
                 <TableColumn fx:id="colId" text="ID" prefWidth="100"/>
                 <TableColumn fx:id="colBrand" text="Brand" prefWidth="100"/>
                 <TableColumn fx:id="colName" text="Name" prefWidth="200"/>
                 <TableColumn fx:id="colOrigin" text="Origin" prefWidth="200"/>
                 <TableColumn fx:id="colPrice" text="Price" prefWidth="100"/>
+                <TableColumn fx:id="colStock" text="Stock" prefWidth="100"/>
             </columns>
         </TableView>
         <HBox layoutX="20" layoutY="480" spacing="20">
             <children>
-                <Button text="Add Stationery" onAction="#handleAddStationery"/>
-                <Button text="Delete Stationery" onAction="#handleDeleteStationery"/>
+                <Button text="Add Stationery" onAction="#handleAdd"/>
+                <Button text="Delete Stationery" onAction="#handleDelete"/>
                 <Button text="Return to Manage Items" onAction="#handleReturnToMenu"/>
             </children>
         </HBox>

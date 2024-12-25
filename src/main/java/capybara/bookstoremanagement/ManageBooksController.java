@@ -15,55 +15,54 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
-public class ManageBooksController {
+public class ManageBooksController extends ManageController {
 
     @FXML
     private TableView<Book> tableView;
     @FXML
-    private TableColumn<Book, Integer> colId;
-    @FXML
-    private TableColumn<Book, String> colBookId;
+    private TableColumn<Book, String> colId;
     @FXML
     private TableColumn<Book, String> colTitle;
     @FXML
     private TableColumn<Book, String> colAuthor;
     @FXML
+    private TableColumn<Book, Integer> colYear;
+    @FXML
+    private TableColumn<Book, String> colGenre;
+    @FXML
+    private TableColumn<Book, String> colPublisher;
+    @FXML
     private TableColumn<Book, Double> colPrice;
-
-    private String previousView;
-    private String previousViewOfManageItems;
-
-    public void setPreviousView(String previousView) {
-        this.previousView = previousView;
-    }
-
-    public void setPreviousViewOfManageItems(String previousViewOfManageItems) {
-        this.previousViewOfManageItems = previousViewOfManageItems;
-    }
+    @FXML
+    private TableColumn<Book, Integer> colStock;
 
     @FXML
     public void initialize() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colBookId.setCellValueFactory(new PropertyValueFactory<>("bookId"));
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         colAuthor.setCellValueFactory(new PropertyValueFactory<>("author"));
+        colYear.setCellValueFactory(new PropertyValueFactory<>("year"));
+        colGenre.setCellValueFactory(new PropertyValueFactory<>("genre"));
+        colPublisher.setCellValueFactory(new PropertyValueFactory<>("publisher"));
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+        colStock.setCellValueFactory(new PropertyValueFactory<>("stock"));
 
-        loadBooks();
+        load();
     }
 
-    private void loadBooks() {
+    public void load() {
         tableView.getItems().clear();
         try {
             ResultSet rs = DatabaseUtil.getAllBooks();
             while (rs.next()) {
-                tableView.getItems().add(new Book(rs.getInt("id"), rs.getString("bookId"), rs.getString("title"), rs.getString("author"), rs.getDouble("price")));
+                tableView.getItems().add(new Book(rs.getString("id"), rs.getString("title"), rs.getString("author"), rs.getInt("year"), rs.getString("genre"), rs.getString("publisher"), rs.getDouble("price"), rs.getInt("stock"), rs.getDouble("cost")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -71,16 +70,14 @@ public class ManageBooksController {
     }
 
     @FXML
-    private void handleAddBook(ActionEvent event) {
+    public void handleAdd(ActionEvent event) {
         Dialog<Book> dialog = new Dialog<>();
         dialog.setTitle("Add New Book");
         dialog.setHeaderText("Enter the details of the new book");
 
-        // Set the button types
         ButtonType addButtonType = new ButtonType("Add", ButtonType.OK.getButtonData());
         dialog.getDialogPane().getButtonTypes().addAll(addButtonType, ButtonType.CANCEL);
 
-        // Create the title, author, and price labels and fields
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
@@ -89,27 +86,51 @@ public class ManageBooksController {
         titleField.setPromptText("Title");
         TextField authorField = new TextField();
         authorField.setPromptText("Author");
+        TextField yearField = new TextField();
+        yearField.setPromptText("Year");
+        TextField genreField = new TextField();
+        genreField.setPromptText("Genre");
+        TextField publisherField = new TextField();
+        publisherField.setPromptText("Publisher");
         TextField priceField = new TextField();
         priceField.setPromptText("Price");
+        TextField stockField = new TextField();
+        stockField.setPromptText("Stock");
+        TextField costField = new TextField();
+        costField.setPromptText("Cost");
 
         grid.add(new Label("Title:"), 0, 0);
         grid.add(titleField, 1, 0);
         grid.add(new Label("Author:"), 0, 1);
         grid.add(authorField, 1, 1);
-        grid.add(new Label("Price:"), 0, 2);
-        grid.add(priceField, 1, 2);
+        grid.add(new Label("Year:"), 0, 2);
+        grid.add(yearField, 1, 2);
+        grid.add(new Label("Genre:"), 0, 3);
+        grid.add(genreField, 1, 3);
+        grid.add(new Label("Publisher:"), 0, 4);
+        grid.add(publisherField, 1, 4);
+        grid.add(new Label("Price:"), 0, 5);
+        grid.add(priceField, 1, 5);
+        grid.add(new Label("Stock:"), 0, 6);
+        grid.add(stockField, 1, 6);
+        grid.add(new Label("Cost:"), 0, 7);
+        grid.add(costField, 1, 7);
 
         dialog.getDialogPane().setContent(grid);
 
-        // Convert the result to a Book object when the Add button is clicked
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == addButtonType) {
                 try {
-                    String bookId = DatabaseUtil.generateUniqueBookId();
+                    String id = DatabaseUtil.generateUniqueBookId();
                     String title = titleField.getText();
                     String author = authorField.getText();
+                    int year = Integer.parseInt(yearField.getText());
+                    String genre = genreField.getText();
+                    String publisher = publisherField.getText();
                     double price = Double.parseDouble(priceField.getText());
-                    return new Book(0, bookId, title, author, price);
+                    int stock = Integer.parseInt(stockField.getText());
+                    double cost = Double.parseDouble(costField.getText());
+                    return new Book(id, title, author, year, genre, publisher, price, stock, cost);
                 } catch (SQLException e) {
                     e.printStackTrace();
                     return null;
@@ -121,8 +142,8 @@ public class ManageBooksController {
         Optional<Book> result = dialog.showAndWait();
         result.ifPresent(book -> {
             try {
-                DatabaseUtil.createBook(book.getBookId(), book.getTitle(), book.getAuthor(), book.getPrice());
-                loadBooks();
+                DatabaseUtil.createBook(book.getId(), book.getTitle(), book.getAuthor(), book.getYear(), book.getGenre(), book.getPublisher(), book.getPrice(), book.getStock(), book.getCost());
+                load();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -130,42 +151,59 @@ public class ManageBooksController {
     }
 
     @FXML
-    private void handleEditBook(ActionEvent event) {
+    public void handleEditBook(ActionEvent event) {
         Book selectedBook = tableView.getSelectionModel().getSelectedItem();
         if (selectedBook != null) {
             Dialog<Book> dialog = new Dialog<>();
             dialog.setTitle("Edit Book");
             dialog.setHeaderText("Edit the details of the book");
 
-            // Set the button types
             ButtonType editButtonType = new ButtonType("Save", ButtonType.OK.getButtonData());
             dialog.getDialogPane().getButtonTypes().addAll(editButtonType, ButtonType.CANCEL);
 
-            // Create the title, author, and price labels and fields
             GridPane grid = new GridPane();
             grid.setHgap(10);
             grid.setVgap(10);
 
             TextField titleField = new TextField(selectedBook.getTitle());
             TextField authorField = new TextField(selectedBook.getAuthor());
+            TextField yearField = new TextField(String.valueOf(selectedBook.getYear()));
+            TextField genreField = new TextField(selectedBook.getGenre());
+            TextField publisherField = new TextField(selectedBook.getPublisher());
             TextField priceField = new TextField(String.valueOf(selectedBook.getPrice()));
+            TextField stockField = new TextField(String.valueOf(selectedBook.getStock()));
+            TextField costField = new TextField(String.valueOf(selectedBook.getCost()));
 
             grid.add(new Label("Title:"), 0, 0);
             grid.add(titleField, 1, 0);
             grid.add(new Label("Author:"), 0, 1);
             grid.add(authorField, 1, 1);
-            grid.add(new Label("Price:"), 0, 2);
-            grid.add(priceField, 1, 2);
+            grid.add(new Label("Year:"), 0, 2);
+            grid.add(yearField, 1, 2);
+            grid.add(new Label("Genre:"), 0, 3);
+            grid.add(genreField, 1, 3);
+            grid.add(new Label("Publisher:"), 0, 4);
+            grid.add(publisherField, 1, 4);
+            grid.add(new Label("Price:"), 0, 5);
+            grid.add(priceField, 1, 5);
+            grid.add(new Label("Stock:"), 0, 6);
+            grid.add(stockField, 1, 6);
+            grid.add(new Label("Cost:"), 0, 7);
+            grid.add(costField, 1, 7);
 
             dialog.getDialogPane().setContent(grid);
 
-            // Convert the result to a Book object when the Save button is clicked
             dialog.setResultConverter(dialogButton -> {
                 if (dialogButton == editButtonType) {
                     String title = titleField.getText();
                     String author = authorField.getText();
+                    int year = Integer.parseInt(yearField.getText());
+                    String genre = genreField.getText();
+                    String publisher = publisherField.getText();
                     double price = Double.parseDouble(priceField.getText());
-                    return new Book(selectedBook.getId(), selectedBook.getBookId(), title, author, price);
+                    int stock = Integer.parseInt(stockField.getText());
+                    double cost = Double.parseDouble(costField.getText());
+                    return new Book(selectedBook.getId(), title, author, year, genre, publisher, price, stock, cost);
                 }
                 return null;
             });
@@ -173,8 +211,8 @@ public class ManageBooksController {
             Optional<Book> result = dialog.showAndWait();
             result.ifPresent(book -> {
                 try {
-                    DatabaseUtil.updateBook(book.getId(), book.getTitle(), book.getAuthor(), book.getPrice());
-                    loadBooks();
+                    DatabaseUtil.updateBook(book.getId(), book.getTitle(), book.getAuthor(), book.getYear(), book.getGenre(), book.getPublisher(), book.getPrice(), book.getStock(), book.getCost());
+                    load();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -183,7 +221,7 @@ public class ManageBooksController {
     }
 
     @FXML
-    private void handleDeleteBook(ActionEvent event) {
+    public void handleDelete(ActionEvent event) {
         Book selectedBook = tableView.getSelectionModel().getSelectedItem();
         if (selectedBook != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this book?", ButtonType.YES, ButtonType.NO);
@@ -191,7 +229,7 @@ public class ManageBooksController {
                 if (response == ButtonType.YES) {
                     try {
                         DatabaseUtil.deleteBook(selectedBook.getId());
-                        loadBooks();
+                        load();
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -201,14 +239,14 @@ public class ManageBooksController {
     }
 
     @FXML
-    private void handleReturnToMenu(ActionEvent event) {
+    public void handleReturnToMenu(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(previousView + ".fxml"));
             Parent root = loader.load();
             ManageItemsController controller = loader.getController();
             controller.setPreviousView(previousViewOfManageItems);
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root,1080, 640));
+            stage.setScene(new Scene(root, 1080, 640));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

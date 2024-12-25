@@ -31,11 +31,11 @@ public class SignUpController {
             return;
         }
 
-        if (DatabaseUtil.addUser(username, password)) {
-            showAlert(Alert.AlertType.INFORMATION, "Sign Up Successful", "User " + username + " has been registered.");
-        } else {
-            showAlert(Alert.AlertType.ERROR, "Sign Up Failed", "Could not register user.");
-        }
+        // if (DatabaseUtil.createAccount(username, password)) {
+        //     showAlert(Alert.AlertType.INFORMATION, "Sign Up Successful", "User " + username + " has been registered.");
+        // } else {
+        //     showAlert(Alert.AlertType.ERROR, "Sign Up Failed", "Could not register user.");
+        // }
     }
 
     // private boolean addUser(String studentId, String username, String password) {

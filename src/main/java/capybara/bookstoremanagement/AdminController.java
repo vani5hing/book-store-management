@@ -1,14 +1,15 @@
 package capybara.bookstoremanagement;
 
 import java.io.IOException;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.layout.VBox;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.fxml.FXMLLoader;
 
 public class AdminController {
 
@@ -49,6 +50,11 @@ public class AdminController {
         navigateToViewWithPrevious(event, "financial_report", "admin_view");
     }
 
+    @FXML
+    private void handleManageAccounts(ActionEvent event) {
+        navigateToViewWithPrevious(event, "manage_accounts", "admin_view");
+    }
+
     private void navigateToViewWithPrevious(ActionEvent event, String viewName, String previousView) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/capybara/bookstoremanagement/" + viewName + ".fxml"));
@@ -62,6 +68,8 @@ public class AdminController {
                 ((ManageEmployeesController) controller).setPreviousView(previousView);
             } else if (controller instanceof ManageOrdersController) {
                 ((ManageOrdersController) controller).setPreviousView(previousView);
+            } else if (controller instanceof ManageAccountController) {
+                ((ManageAccountController) controller).setPreviousView(previousView);
             }
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 1080, 640));

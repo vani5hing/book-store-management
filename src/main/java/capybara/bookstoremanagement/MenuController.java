@@ -1,18 +1,17 @@
 package capybara.bookstoremanagement;
 
+import java.util.Optional;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.DialogPane;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.layout.GridPane;
-import javafx.scene.control.ButtonType;
-
-import java.util.Optional;
+import javafx.stage.Stage;
 
 public class MenuController {
 
@@ -94,6 +93,18 @@ public class MenuController {
     private void handleManageItems(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("manage_items.fxml"));
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root, 1080, 640));
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleManageAccounts(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("manage_accounts.fxml"));
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 1080, 640));
             stage.show();

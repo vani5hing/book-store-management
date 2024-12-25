@@ -1,17 +1,18 @@
 package capybara.bookstoremanagement;
 
+import java.util.Map;
+import java.util.stream.Collectors;
+
 public class Order {
     private int id;
     private String customer;
-    private String bookId;
-    private int quantity;
+    private Map<String, Integer> books; // Map of bookId to quantity
     private double totalPrice;
 
-    public Order(int id, String customer, String bookId, int quantity, double totalPrice) {
+    public Order(int id, String customer, Map<String, Integer> books, double totalPrice) {
         this.id = id;
         this.customer = customer;
-        this.bookId = bookId;
-        this.quantity = quantity;
+        this.books = books;
         this.totalPrice = totalPrice;
     }
 
@@ -23,15 +24,23 @@ public class Order {
         return customer;
     }
 
-    public String getBookId() {
-        return bookId;
+    public Map<String, Integer> getBooks() {
+        return books;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public int getQuantity(String bookId) {
+        return books.getOrDefault(bookId, 0);
     }
 
     public double getTotalPrice() {
         return totalPrice;
+    }
+
+    public String getBooksFormatted() {
+        return books.keySet().stream().collect(Collectors.joining(", "));
+    }
+
+    public String getQuantitiesFormatted() {
+        return books.values().stream().map(String::valueOf).collect(Collectors.joining(", "));
     }
 }

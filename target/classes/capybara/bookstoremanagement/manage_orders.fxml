@@ -10,8 +10,8 @@
             <columns>
                 <TableColumn fx:id="colId" text="ID" prefWidth="100"/>
                 <TableColumn fx:id="colCustomer" text="Customer" prefWidth="200"/>
-                <TableColumn fx:id="colBookId" text="BookID" prefWidth="200"/>
-                <TableColumn fx:id="colQuantity" text="Quantity" prefWidth="100"/>
+                <TableColumn fx:id="colBooks" text="Books" prefWidth="200"/>
+                <TableColumn fx:id="colQuantities" text="Quantities" prefWidth="100"/>
                 <TableColumn fx:id="colTotalPrice" text="Total Price" prefWidth="100"/>
             </columns>
         </TableView>

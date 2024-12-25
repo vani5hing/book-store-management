@@ -14,15 +14,6 @@ public class AdminController {
 
     @FXML
     private VBox vbox;
-    @FXML
-    private Label greetingLabel;
-
-    private String username;
-
-    public void setUsername(String username) {
-        this.username = username;
-        greetingLabel.setText("How it's going, " + username + "?");
-    }
 
     @FXML
     private void handleManageEmployees(ActionEvent event) {

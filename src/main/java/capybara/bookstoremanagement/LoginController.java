@@ -48,8 +48,7 @@ public class LoginController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("admin_view.fxml"));
             Parent root = loader.load();
-            AdminController controller = loader.getController();
-            controller.setUsername(username);
+            // AdminController controller = loader.getController();
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.setScene(new Scene(root, 1080, 640));
             stage.show();
@@ -62,8 +61,8 @@ public class LoginController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("manager_view.fxml"));
             Parent root = loader.load();
-            ManagerController controller = loader.getController();
-            controller.setUsername(username);
+            // ManagerController controller = loader.getController();
+            // controller.setUsername(username);
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.setScene(new Scene(root, 1080, 640));
             stage.show();
@@ -76,8 +75,8 @@ public class LoginController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("employee_view.fxml"));
             Parent root = loader.load();
-            EmployeeController controller = loader.getController();
-            controller.setUsername(username);
+            // EmployeeController controller = loader.getController();
+            // controller.setUsername(username);
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.setScene(new Scene(root, 1080, 640));
             stage.show();

@@ -1,25 +1,23 @@
 package capybara.bookstoremanagement;
 
 import java.io.IOException;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
 
 public class ManagerController {
 
     @FXML
     private VBox vbox;
+
     @FXML
     private Label greetingLabel;
-
     private String username;
-
     public void setUsername(String username) {
         this.username = username;
         greetingLabel.setText("How it's going, " + username + "?");
@@ -50,6 +48,19 @@ public class ManagerController {
         navigateToViewWithPrevious(event, "manage_accounts", "manager_view");
     }
 
+    @FXML
+    private void handleLogOut(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/capybara/bookstoremanagement/login.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root, 1080, 640));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void navigateToViewWithPrevious(ActionEvent event, String viewName, String previousView) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/capybara/bookstoremanagement/" + viewName + ".fxml"));
@@ -69,7 +80,6 @@ public class ManagerController {
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 1080, 640));
             stage.show();
-            
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -5,6 +5,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,7 +29,7 @@ public class ManageStationeriesController {
     @FXML
     private TableView<Stationery> tableView;
     @FXML
-    private TableColumn<Stationery, Integer> colId;
+    private TableColumn<Stationery, String> colId;
     @FXML
     private TableColumn<Stationery, String> colBrand;
     @FXML
@@ -34,9 +38,13 @@ public class ManageStationeriesController {
     private TableColumn<Stationery, String> colOrigin;
     @FXML
     private TableColumn<Stationery, Double> colPrice;
+    @FXML
+    private TextField searchField;
 
     private String previousView;
     private String previousViewOfManageItems;
+
+    private FilteredList<Stationery> filteredStationeries;
 
     public void setPreviousView(String previousView) {
         this.previousView = previousView;
@@ -58,15 +66,32 @@ public class ManageStationeriesController {
     }
 
     private void loadStationeries() {
-        tableView.getItems().clear();
         try {
             ResultSet rs = DatabaseUtil.getAllStationeries();
+            ObservableList<Stationery> stationeryList = FXCollections.observableArrayList();
             while (rs.next()) {
-                tableView.getItems().add(new Stationery(rs.getString("id"), rs.getString("brand"), rs.getString("name"), rs.getString("origin"), rs.getDouble("price")));
+                stationeryList.add(new Stationery(rs.getString("id"), rs.getString("brand"), rs.getString("name"), rs.getString("origin"), rs.getDouble("price")));
             }
+            filteredStationeries = new FilteredList<>(stationeryList, p -> true);
+            SortedList<Stationery> sortedStationeries = new SortedList<>(filteredStationeries);
+            sortedStationeries.comparatorProperty().bind(tableView.comparatorProperty());
+            tableView.setItems(sortedStationeries);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void handleSearch() {
+        String searchText = searchField.getText().toLowerCase();
+        filteredStationeries.setPredicate(stationery -> {
+            if (searchText == null || searchText.isEmpty()) {
+                return true;
+            }
+            return stationery.getName().toLowerCase().contains(searchText) ||
+                   stationery.getBrand().toLowerCase().contains(searchText) ||
+                   stationery.getId().toLowerCase().contains(searchText);
+        });
     }
 
     @FXML
@@ -112,8 +137,8 @@ public class ManageStationeriesController {
                     double price = Double.parseDouble(priceField.getText());
                     return new Stationery(id, brand, name, origin, price);
                 } catch (SQLException e) {
-                        e.printStackTrace();
-                        return null;
+                    e.printStackTrace();
+                    return null;
                 }
             }
             return null;

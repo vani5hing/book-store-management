@@ -46,7 +46,6 @@ public class ManageOrdersController {
     @FXML
     private TableColumn<Order, String> colTimeCreated;
 
-
     private void loadOrders() {
         tableView.getItems().clear();
         try {
@@ -66,6 +65,7 @@ public class ManageOrdersController {
             e.printStackTrace();
         }
     }
+
     @FXML
     public void initialize() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -77,7 +77,6 @@ public class ManageOrdersController {
 
         loadOrders();
     }
-
 
     @FXML
     private void handleEditOrder(ActionEvent event) {
@@ -99,11 +98,14 @@ public class ManageOrdersController {
             TextField itemidField = new TextField(selectedOrder.getItemid());
             TextField quantityField = new TextField(String.valueOf(selectedOrder.getQuantity()));
 
-            Label totalPriceLabel = new Label(String.format("Total Price: €%.2f", selectedOrder.getTotalPrice()).replace('.', ','));
+            Label totalPriceLabel = new Label(
+                    String.format("Total Price: €%.2f", selectedOrder.getTotalPrice()).replace('.', ','));
             vbox.getChildren().add(totalPriceLabel);
 
-            itemidField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(itemidField, quantityField, totalPriceLabel));
-            quantityField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(itemidField, quantityField, totalPriceLabel));
+            itemidField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(itemidField,
+                    quantityField, totalPriceLabel));
+            quantityField.textProperty().addListener((observable, oldValue,
+                    newValue) -> calculateTotalPrice(itemidField, quantityField, totalPriceLabel));
 
             GridPane itemGrid = new GridPane();
             itemGrid.setHgap(10);
@@ -125,7 +127,8 @@ public class ManageOrdersController {
                     String itemid = itemidField.getText();
                     int quantity = Integer.parseInt(quantityField.getText());
                     double totalPrice = calculateTotalPrice(itemid, quantity);
-                    return new Order(selectedOrder.getId(), customer, itemid, quantity, totalPrice, selectedOrder.getTimeCreated());
+                    return new Order(selectedOrder.getId(), customer, itemid, quantity, totalPrice,
+                            selectedOrder.getTimeCreated());
                 }
                 return null;
             });
@@ -133,7 +136,8 @@ public class ManageOrdersController {
             Optional<Order> result = dialog.showAndWait();
             result.ifPresent(order -> {
                 try {
-                    DatabaseUtil.updateOrder(order.getId(), order.getCustomer(), order.getItemid(), order.getQuantity(), order.getTotalPrice());
+                    DatabaseUtil.updateOrder(order.getId(), order.getCustomer(), order.getItemid(), order.getQuantity(),
+                            order.getTotalPrice());
                     loadOrders();
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -146,7 +150,8 @@ public class ManageOrdersController {
     private void handleDeleteOrder(ActionEvent event) {
         Order selectedOrder = tableView.getSelectionModel().getSelectedItem();
         if (selectedOrder != null) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this order?", ButtonType.YES, ButtonType.NO);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this order?",
+                    ButtonType.YES, ButtonType.NO);
             alert.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.YES) {
                     try {
@@ -173,40 +178,40 @@ public class ManageOrdersController {
     }
 
     @FXML
-private void handleGenerateBill(ActionEvent event) {
-    TextInputDialog dialog = new TextInputDialog();
-    dialog.setTitle("Generate Bill");
-    dialog.setHeaderText("Enter the customer name to generate the bill");
-    dialog.setContentText("Customer:");
+    private void handleGenerateBill(ActionEvent event) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Generate Bill");
+        dialog.setHeaderText("Enter the customer name to generate the bill");
+        dialog.setContentText("Customer:");
 
-    Optional<String> result = dialog.showAndWait();
-    result.ifPresent(customer -> {
-        try {
-            // Tìm thời gian đặt hàng gần nhất của khách hàng
-            String latestTimeCreated = getLatestOrderTimeForCustomer(customer);
-            if (latestTimeCreated != null) {
-                Bill bill = generateBillForCustomer(customer, latestTimeCreated);
-                displayBill(bill);
-            } else {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("No Orders Found");
-                alert.setHeaderText("No orders found for this customer");
-                alert.setContentText("The customer '" + customer + "' does not have any orders.");
-                alert.showAndWait();
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(customer -> {
+            try {
+                // Tìm thời gian đặt hàng gần nhất của khách hàng
+                String latestTimeCreated = getLatestOrderTimeForCustomer(customer);
+                if (latestTimeCreated != null) {
+                    Bill bill = generateBillForCustomer(customer, latestTimeCreated);
+                    displayBill(bill);
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("No Orders Found");
+                    alert.setHeaderText("No orders found for this customer");
+                    alert.setContentText("The customer '" + customer + "' does not have any orders.");
+                    alert.showAndWait();
+                }
+            } catch (SQLException | IOException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
-        }
-    });
-}
-private String getLatestOrderTimeForCustomer(String customer) throws SQLException {
-    ResultSet rs = DatabaseUtil.getLatestOrderTimeByCustomer(customer);
-    if (rs.next()) {
-        return rs.getString("latest_time");
+        });
     }
-    return null;
-}
 
+    private String getLatestOrderTimeForCustomer(String customer) throws SQLException {
+        ResultSet rs = DatabaseUtil.getLatestOrderTimeByCustomer(customer);
+        if (rs.next()) {
+            return rs.getString("latest_time");
+        }
+        return null;
+    }
 
     private Bill generateBillForCustomer(String customer, String timeCreated) throws SQLException {
         ResultSet rs = DatabaseUtil.getOrdersByCustomerAndTime(customer, timeCreated);
@@ -237,7 +242,6 @@ private String getLatestOrderTimeForCustomer(String customer) throws SQLExceptio
         stage.setScene(new Scene(root));
         stage.show();
     }
-
 
     private double calculateTotalPrice(String itemid, int quantity) {
         double totalPrice = 0.0;
@@ -274,139 +278,142 @@ private String getLatestOrderTimeForCustomer(String customer) throws SQLExceptio
         }
     }
 
-    
-private void calculateTotalPrice(Map<TextField, TextField> itemFields, Label totalPriceLabel) {
-    double totalPrice = 0.0;
-    for (Map.Entry<TextField, TextField> entry : itemFields.entrySet()) {
-        try {
-            String itemid = entry.getKey().getText();
-            int quantity = Integer.parseInt(entry.getValue().getText());
-            double price = DatabaseUtil.getItemPriceById(itemid);
-            totalPrice += price * quantity;
-        } catch (NumberFormatException | SQLException e) {
-            // Handle exception
+    private void calculateTotalPrice(Map<TextField, TextField> itemFields, Label totalPriceLabel) {
+        double totalPrice = 0.0;
+        for (Map.Entry<TextField, TextField> entry : itemFields.entrySet()) {
+            try {
+                String itemid = entry.getKey().getText();
+                int quantity = Integer.parseInt(entry.getValue().getText());
+                double price = DatabaseUtil.getItemPriceById(itemid);
+                totalPrice += price * quantity;
+            } catch (NumberFormatException | SQLException e) {
+                // Handle exception
+            }
         }
+        totalPriceLabel.setText(String.format("Total Price: $%.2f", totalPrice).replace('.', ','));
     }
-    totalPriceLabel.setText(String.format("Total Price: $%.2f", totalPrice).replace('.', ','));
-}
 
-@FXML
-private void handleAddOrder(ActionEvent event) {
-    TextInputDialog phoneDialog = new TextInputDialog();
-    phoneDialog.setTitle("Enter Customer Phone");
-    phoneDialog.setHeaderText("Enter the customer's phone number:");
-    phoneDialog.setContentText("Phone:");
+    @FXML
+    private void handleAddOrder(ActionEvent event) {
+        TextInputDialog phoneDialog = new TextInputDialog();
+        phoneDialog.setTitle("Enter Customer Phone");
+        phoneDialog.setHeaderText("Enter the customer's phone number:");
+        phoneDialog.setContentText("Phone:");
 
-    Optional<String> phoneResult = phoneDialog.showAndWait();
-    phoneResult.ifPresent(phone -> {
-        try {
-            if (!DatabaseUtil.isCustomerExistsByPhone(phone)) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Customer Not Found");
-                alert.setHeaderText(null);
-                alert.setContentText("The customer with the provided phone number does not exist.");
-                alert.showAndWait();
-            } else {
-                openAddOrderDialog(phone); // Mở hộp thoại để thêm đơn hàng
+        Optional<String> phoneResult = phoneDialog.showAndWait();
+        phoneResult.ifPresent(phone -> {
+            try {
+                if (!DatabaseUtil.isCustomerExistsByPhone(phone)) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Customer Not Found");
+                    alert.setHeaderText(null);
+                    alert.setContentText("The customer with the provided phone number does not exist.");
+                    alert.showAndWait();
+                } else {
+                    openAddOrderDialog(phone); // Mở hộp thoại để thêm đơn hàng
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    });
-}
+        });
+    }
 
-private void openAddOrderDialog(String phone) {
-    Dialog<Order> dialog = new Dialog<>();
-    dialog.setTitle("Add New Order");
-    dialog.setHeaderText("Enter the details of the new order");
+    private void openAddOrderDialog(String phone) {
+        Dialog<Order> dialog = new Dialog<>();
+        dialog.setTitle("Add New Order");
+        dialog.setHeaderText("Enter the details of the new order");
 
-    ButtonType addButtonType = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
-    dialog.getDialogPane().getButtonTypes().addAll(addButtonType, ButtonType.CANCEL);
+        ButtonType addButtonType = new ButtonType("Add", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(addButtonType, ButtonType.CANCEL);
 
-    VBox vbox = new VBox(10);
+        VBox vbox = new VBox(10);
 
-    TextField customerPhoneField = new TextField(phone);
-    customerPhoneField.setEditable(false);
-    vbox.getChildren().add(new Label("Customer Phone:"));
-    vbox.getChildren().add(customerPhoneField);
+        TextField customerPhoneField = new TextField(phone);
+        customerPhoneField.setEditable(false);
+        vbox.getChildren().add(new Label("Customer Phone:"));
+        vbox.getChildren().add(customerPhoneField);
 
-    // Create a map to store item fields
-    Map<TextField, TextField> itemFields = new HashMap<>();
-    final int[] row = {1};
+        // Create a map to store item fields
+        Map<TextField, TextField> itemFields = new HashMap<>();
+        final int[] row = { 1 };
 
-    TextField itemidField = new TextField();
-    itemidField.setPromptText("Item ID");
-    TextField quantityField = new TextField();
-    quantityField.setPromptText("Quantity");
+        TextField itemidField = new TextField();
+        itemidField.setPromptText("Item ID");
+        TextField quantityField = new TextField();
+        quantityField.setPromptText("Quantity");
 
-    Label totalPriceLabel = new Label("Total Price: $0,00");
-    vbox.getChildren().add(totalPriceLabel);
+        Label totalPriceLabel = new Label("Total Price: $0,00");
+        vbox.getChildren().add(totalPriceLabel);
 
-    itemidField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(itemFields, totalPriceLabel));
-    quantityField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(itemFields, totalPriceLabel));
+        itemidField.textProperty()
+                .addListener((observable, oldValue, newValue) -> calculateTotalPrice(itemFields, totalPriceLabel));
+        quantityField.textProperty()
+                .addListener((observable, oldValue, newValue) -> calculateTotalPrice(itemFields, totalPriceLabel));
 
-    GridPane itemGrid = new GridPane();
-    itemGrid.setHgap(10);
-    itemGrid.setVgap(10);
-    itemGrid.add(new Label("Item ID:"), 0, row[0]);
-    itemGrid.add(itemidField, 1, row[0]);
-    itemGrid.add(new Label("Quantity:"), 2, row[0]);
-    itemGrid.add(quantityField, 3, row[0]);
-
-    itemFields.put(itemidField, quantityField);
-
-    Button addItemButton = new Button("Add Item");
-    vbox.getChildren().add(itemGrid);
-    vbox.getChildren().add(addItemButton);
-
-    addItemButton.setOnAction(e -> {
-        row[0]++;
-        TextField newItemidField = new TextField();
-        newItemidField.setPromptText("Item ID");
-        TextField newQuantityField = new TextField();
-        newQuantityField.setPromptText("Quantity");
-
-        newItemidField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(itemFields, totalPriceLabel));
-        newQuantityField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(itemFields, totalPriceLabel));
-
+        GridPane itemGrid = new GridPane();
+        itemGrid.setHgap(10);
+        itemGrid.setVgap(10);
         itemGrid.add(new Label("Item ID:"), 0, row[0]);
-        itemGrid.add(newItemidField, 1, row[0]);
+        itemGrid.add(itemidField, 1, row[0]);
         itemGrid.add(new Label("Quantity:"), 2, row[0]);
-        itemGrid.add(newQuantityField, 3, row[0]);
+        itemGrid.add(quantityField, 3, row[0]);
 
-        itemFields.put(newItemidField, newQuantityField);
-    });
+        itemFields.put(itemidField, quantityField);
 
-    ScrollPane scrollPane = new ScrollPane(vbox);
-    scrollPane.setFitToWidth(true);
-    dialog.getDialogPane().setContent(scrollPane);
+        Button addItemButton = new Button("Add Item");
+        vbox.getChildren().add(itemGrid);
+        vbox.getChildren().add(addItemButton);
 
-    dialog.setResultConverter(dialogButton -> {
-        if (dialogButton == addButtonType) {
-            Map<String, Integer> items = new HashMap<>();
-            for (Map.Entry<TextField, TextField> entry : itemFields.entrySet()) {
-                String itemid = entry.getKey().getText();
-                int quantity = Integer.parseInt(entry.getValue().getText());
-                items.put(itemid, quantity);
+        addItemButton.setOnAction(e -> {
+            row[0]++;
+            TextField newItemidField = new TextField();
+            newItemidField.setPromptText("Item ID");
+            TextField newQuantityField = new TextField();
+            newQuantityField.setPromptText("Quantity");
+
+            newItemidField.textProperty()
+                    .addListener((observable, oldValue, newValue) -> calculateTotalPrice(itemFields, totalPriceLabel));
+            newQuantityField.textProperty()
+                    .addListener((observable, oldValue, newValue) -> calculateTotalPrice(itemFields, totalPriceLabel));
+
+            itemGrid.add(new Label("Item ID:"), 0, row[0]);
+            itemGrid.add(newItemidField, 1, row[0]);
+            itemGrid.add(new Label("Quantity:"), 2, row[0]);
+            itemGrid.add(newQuantityField, 3, row[0]);
+
+            itemFields.put(newItemidField, newQuantityField);
+        });
+
+        ScrollPane scrollPane = new ScrollPane(vbox);
+        scrollPane.setFitToWidth(true);
+        dialog.getDialogPane().setContent(scrollPane);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == addButtonType) {
+                Map<String, Integer> items = new HashMap<>();
+                for (Map.Entry<TextField, TextField> entry : itemFields.entrySet()) {
+                    String itemid = entry.getKey().getText();
+                    int quantity = Integer.parseInt(entry.getValue().getText());
+                    items.put(itemid, quantity);
+                }
+                return new Order(0, phone, null, 0, 0.0, java.time.LocalDateTime.now().toString());
             }
-            return new Order(0, phone, null, 0, 0.0, java.time.LocalDateTime.now().toString());
-        }
-        return null;
-    });
+            return null;
+        });
 
-    Optional<Order> result = dialog.showAndWait();
-    result.ifPresent(order -> {
-        try {
-            for (Map.Entry<TextField, TextField> entry : itemFields.entrySet()) {
-                String itemid = entry.getKey().getText();
-                int quantity = Integer.parseInt(entry.getValue().getText());
-                double itemTotalPrice = DatabaseUtil.getItemPriceById(itemid) * quantity;
-                DatabaseUtil.addOrder(order.getCustomer(), itemid, quantity, itemTotalPrice);
+        Optional<Order> result = dialog.showAndWait();
+        result.ifPresent(order -> {
+            try {
+                for (Map.Entry<TextField, TextField> entry : itemFields.entrySet()) {
+                    String itemid = entry.getKey().getText();
+                    int quantity = Integer.parseInt(entry.getValue().getText());
+                    double itemTotalPrice = DatabaseUtil.getItemPriceById(itemid) * quantity;
+                    DatabaseUtil.addOrder(order.getCustomer(), itemid, quantity, itemTotalPrice);
+                }
+                loadOrders();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-            loadOrders();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    });
-}
+        });
+    }
 }

@@ -36,7 +36,7 @@ public class ManageItemsController {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(previousView + ".fxml"));
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 640, 540));
+            stage.setScene(new Scene(root, 1080, 640));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -61,7 +61,7 @@ public class ManageItemsController {
                 controller.setPreviousViewOfManageItems(previousView);
             }
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 640, 540));
+            stage.setScene(new Scene(root, 1080, 640));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

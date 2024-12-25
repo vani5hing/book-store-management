@@ -1,22 +1,16 @@
 package capybara.bookstoremanagement;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
+
 
 public class ManageBillController {
 
@@ -53,15 +47,16 @@ public class ManageBillController {
                 double totalPrice = rs.getDouble("totalPrice");
 
                 // Populate books and bookTitles maps
-                ResultSet orderRs = DatabaseUtil.getOrdersByCustomerAndTime(customer, timeCreated);
-                while (orderRs.next()) {
-                    String bookId = orderRs.getString("bookId");
-                    int quantity = orderRs.getInt("quantity");
-                    books.put(bookId, quantity);
-                    bookTitles.put(bookId, DatabaseUtil.getBookTitleById(bookId));
+                ResultSet orderItems = DatabaseUtil.getOrdersByCustomerAndTime(customer, timeCreated);
+                while (orderItems.next()) {
+                    String itemid = orderItems.getString("itemid");
+                    int quantity = orderItems.getInt("quantity");
+                    books.put(itemid, quantity);
+                    bookTitles.put(itemid, DatabaseUtil.getBookTitleById(itemid));
                 }
 
-                tableView.getItems().add(new Bill(customer, books, bookTitles, totalPrice, timeCreated));
+                Bill bill = new Bill(customer, books, bookTitles, totalPrice, timeCreated);
+                tableView.getItems().add(bill);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -69,22 +64,15 @@ public class ManageBillController {
     }
 
     @FXML
-    private void handleGenerateBill(ActionEvent event) {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Generate Bill");
-        dialog.setHeaderText("Enter the customer name to generate the bill");
-        dialog.setContentText("Customer:");
-
-        Optional<String> result = dialog.showAndWait();
-        result.ifPresent(customer -> {
-            try {
-                Bill bill = generateBillForCustomer(customer);
-                saveBillToFile(bill);
-                displayBill(bill);
-            } catch (SQLException | IOException e) {
-                e.printStackTrace();
-            }
-        });
+    private void handleGenerateBill() throws SQLException {
+        // try {
+            {String customer = getSelectedCustomer();
+            Bill bill = generateBillForCustomer(customer);
+            saveBillToFile(bill);
+            displayBill(bill);}
+        // } catch (SQLException | IOException e) {
+            // e.printStackTrace();
+        // }
     }
 
     private Bill generateBillForCustomer(String customer) throws SQLException {
@@ -95,11 +83,11 @@ public class ManageBillController {
         String timeCreated = null;
 
         while (rs.next()) {
-            String bookId = rs.getString("bookId");
+            String itemid = rs.getString("itemid");
             int quantity = rs.getInt("quantity");
-            books.put(bookId, books.getOrDefault(bookId, 0) + quantity);
-            bookTitles.put(bookId, DatabaseUtil.getBookTitleById(bookId));
-            totalPrice += DatabaseUtil.getBookPriceById(bookId) * quantity;
+            books.put(itemid, books.getOrDefault(itemid, 0) + quantity);
+            bookTitles.put(itemid, DatabaseUtil.getBookTitleById(itemid));
+            totalPrice += DatabaseUtil.getBookPriceById(itemid) * quantity;
             if (timeCreated == null) {
                 timeCreated = rs.getString("timeCreated");
             }
@@ -108,46 +96,16 @@ public class ManageBillController {
         return new Bill(customer, books, bookTitles, totalPrice, timeCreated);
     }
 
-    private void saveBillToFile(Bill bill) throws IOException {
-        File billsDir = new File("bills");
-        if (!billsDir.exists()) {
-            billsDir.mkdir();
-        }
-        String sanitizedTimeCreated = bill.getTimeCreated().replace(":", "-").replace(" ", "_");
-        String fileName = "bills/" + bill.getCustomer() + "_" + sanitizedTimeCreated + ".txt";
-        try (FileWriter writer = new FileWriter(fileName)) {
-            writer.write("Customer: " + bill.getCustomer() + "\n");
-            writer.write("Time Created: " + bill.getTimeCreated() + "\n");
-            writer.write("Books:\n");
-            for (Map.Entry<String, Integer> entry : bill.getBooks().entrySet()) {
-                writer.write(" - " + entry.getKey() + ": " + entry.getValue() + "\n");
-            }
-            writer.write("Total Price: " + bill.getTotalPrice() + "\n");
-        }
+    private void saveBillToFile(Bill bill) {
+        // Implementation for saving bill to file
     }
 
-    private void displayBill(Bill bill) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("bill_view.fxml"));
-        Parent root = loader.load();
-
-        BillViewController controller = loader.getController();
-        controller.setBill(bill);
-
-        Stage stage = new Stage();
-        stage.setTitle("Bill for " + bill.getCustomer());
-        stage.setScene(new Scene(root));
-        stage.show();
+    private void displayBill(Bill bill) {
+        // Implementation for displaying bill
     }
 
-    @FXML
-    private void handleReturnToMenu(ActionEvent event) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/capybara/bookstoremanagement/main_menu.fxml"));
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 1080, 640));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private String getSelectedCustomer() {
+        // Implementation for getting selected customer
+        return "selectedCustomer";
     }
 }

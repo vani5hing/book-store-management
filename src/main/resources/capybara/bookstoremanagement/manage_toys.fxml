@@ -17,7 +17,7 @@
                 <TableColumn fx:id="colStock" text="Stock" prefWidth="50"/>
             </columns>
         </TableView>
-        <HBox layoutX="20" layoutY="480" spacing="20">
+        <HBox layoutX="90" layoutY="480" spacing="20">
             <children>
                 <Button text="Add Toy" onAction="#handleAdd"/>
                 <Button text="Delete Toy" onAction="#handleDelete"/>

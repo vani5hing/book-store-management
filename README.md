@@ -5,7 +5,7 @@
 ## 📖 **Introduction**  
 The **Bookstore Management System** is a comprehensive and efficient solution designed to simplify the management of bookstore operations. It offers functionalities for managing books, customers, employees, and sales orders. Built using **JavaFX** and **SQLite**, this system ensures smooth operations with an intuitive user interface and reliable database management.
 
-![App Screenshot](path/to/screenshot.png)
+![UML Diagram](https://github.com/respectthanh/book-store-management/blob/main/BookStoreManagement.png)
 
 ## 📸 **Screenshots**
 - **Login Screen:**  
@@ -95,62 +95,62 @@ Follow the steps below to set up the project locally:
 #Bookstore Management – Project Structure
 # 📚 **Bookstore Management – Project Structure**
 
-## 📦 **Using Java & SQLite**
-- **📁 src**
-   - **📁 main**
-     - **📁 java**
-       - **📂 capybara.bookstoremanagement**
-         - 🛠️ **AdminController.java** - Manages admin functionalities  
-         - 🚀 **App.java** - Main application entry point  
-         - 📚 **Book.java** - Handles book details  
-         - 🧑‍🤝‍🧑 **Customer.java** - Manages customer information  
-         - 🗃️ **DatabaseUtil.java** - Database connection and utilities  
-         - 👥 **Employee.java** - Manages employee details  
-         - 📊 **EmployeeController.java** - Controls employee-related actions  
-         - 🔑 **LoginController.java** - Handles user login  
-         - 🧠 **ManagerController.java** - Oversees system operations  
-         - 📖 **ManageBooksController.java** - Manages book operations  
-         - 🛡️ **ManageCustomersController.java** - Handles customer operations  
-         - 📑 **ManageEmployeesController.java** - Oversees employee management  
-         - 🛒 **Order.java** - Tracks order details  
-         - 📝 **SignUpController.java** - Handles user registration  
-         - 👤 **User.java** - Manages user accounts  
+## 📂 **Project Structure**
 
-   - **📁 resources**
-     - 🖥️ **admin_view.fxml** - Admin panel UI  
-     - 🔐 **login.fxml** - Login screen UI  
-     - 📚 **manage_books.fxml** - Manage books UI  
-     - 🛍️ **manage_customers.fxml** - Manage customers UI  
-     - 🧠 **manager_view.fxml** - Manager dashboard UI  
-     - 🏠 **menu.fxml** - Main menu UI  
-     - 🎯 **primary.fxml** - Primary UI layout  
-     - 📝 **signup.fxml** - Signup screen UI  
-     - 📊 **books_dataset.json** - Sample dataset for books  
-
-- **📁 test**
-   - 🧪 **DatabaseTest.java** - Unit tests for database operations  
-   - ⚙️ **ControllerTest.java** - Unit tests for controllers  
-
-- **📄 pom.xml** - Maven dependencies and configuration  
-- **📘 README.md** - Project documentation  
-- **📜 LICENSE** - License information  
-- 🚫 **.gitignore** - Files ignored by version control  
-- 🗂️ **bookstore.db** - Primary SQLite database  
-- 🗂️ **books.db** - Secondary SQLite database  
-
-## 🛠️ **Build**
-- 📁 **target** - Compiled classes and resources  
-
-## 📊 **Dataset**
-- 📄 **books_dataset.json** - Sample book dataset  
-
-## 🖼️ **Assets**
-- 📊 **BookStoreManagement.png** - Project overview diagram/image  
----
-
-## 📜 **License**
-This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for details.
-
+📦 **Using Java & SQLite**  
+├── 📁 **src**  
+│   ├── 📁 **main**  
+│   │   ├── 📁 **java**  
+│   │   │   ├── 📁 **capybara.bookstoremanagement**  
+│   │   │   │   ├── 🛠️ **AdminController.java**         # Manages admin functionalities  
+│   │   │   │   ├── 🚀 **App.java**                      # Main application entry point  
+│   │   │   │   ├── 📚 **Book.java**                     # Handles book details  
+│   │   │   │   ├── 🧑‍🤝‍🧑 **Customer.java**                # Manages customer information  
+│   │   │   │   ├── 🗃️ **DatabaseUtil.java**             # Database connection and utilities  
+│   │   │   │   ├── 👥 **Employee.java**                 # Manages employee details  
+│   │   │   │   ├── 📊 **EmployeeController.java**       # Controls employee-related actions  
+│   │   │   │   ├── 📦 **Item.java**                     # Manages item details  
+│   │   │   │   ├── 🔑 **LoginController.java**          # Handles user login  
+│   │   │   │   ├── 🧠 **ManagerController.java**        # Oversees system operations  
+│   │   │   │   ├── 📖 **ManageBooksController.java**    # Manages book operations  
+│   │   │   │   ├── 🛡️ **ManageCustomersController.java** # Handles customer operations  
+│   │   │   │   ├── 📑 **ManageEmployeesController.java** # Oversees employee management  
+│   │   │   │   ├── 📦 **ManageOrdersController.java**    # Manages order operations  
+│   │   │   │   ├── 🛒 **Order.java**                    # Tracks order details  
+│   │   │   │   ├── 📝 **SignUpController.java**         # Handles user registration  
+│   │   │   │   ├── 👤 **User.java**                     # Manages user accounts  
+│   │   ├── 📁 **resources**  
+│   │   │   ├── 🖥️ **admin_view.fxml**                   # Admin control interface  
+│   │   │   ├── 🧑‍💼 **employee_view.fxml**                # Employee dashboard UI  
+│   │   │   ├── 🔐 **login.fxml**                        # Login screen UI  
+│   │   │   ├── 📚 **manage_books.fxml**                 # Manage books UI  
+│   │   │   ├── 🛍️ **manage_customers.fxml**             # Manage customers UI  
+│   │   │   ├── 📑 **manage_employees.fxml**             # Manage employees UI  
+│   │   │   ├── 📦 **manage_orders.fxml**                # Manage orders UI  
+│   │   │   ├── 🧠 **manager_view.fxml**                 # Manager dashboard UI  
+│   │   │   ├── 🏠 **menu.fxml**                         # Main menu UI  
+│   │   │   ├── 🎯 **primary.fxml**                      # Primary UI layout  
+│   │   │   ├── 🖥️ **secondary.fxml**                    # Secondary UI layout  
+│   │   │   ├── 📝 **signup.fxml**                       # Signup screen UI  
+│   │   │   ├── 📊 **books_dataset.json**                # Sample dataset for books  
+│   ├── 📁 **test**  
+│   │   ├── 🧪 **DatabaseTest.java**                    # Unit tests for database operations  
+│   │   ├── ⚙️ **ControllerTest.java**                  # Unit tests for controllers  
+│   ├── 📄 **pom.xml**                                  # Maven dependencies and configuration  
+├── 📘 **README.md**                                    # Project documentation  
+├── 📜 **LICENSE**                                      # License information  
+├── 🚫 **.gitignore**                                   # Files ignored by version control  
+├── 🗂️ **bookstore.db**                                 # Primary SQLite database  
+├── 🗂️ **books.db**                                     # Secondary SQLite database  
+│  
+🛠️ **Build**  
+├── 📁 **target**  
+│   ├── 🏗️ **Compiled classes and resources**  
+│  
+📊 **Dataset**  
+├── 📄 **books_dataset.json**                           # Sample book dataset  
+│  
+🖼️ **BookStoreManagement.png**                         # Project overview diagram/image 
 ---
 
 ## 📝 **Notes**

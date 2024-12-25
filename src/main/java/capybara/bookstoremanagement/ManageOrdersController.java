@@ -62,7 +62,7 @@ public class ManageOrdersController {
             ResultSet rs = DatabaseUtil.getAllOrders();
             while (rs.next()) {
                 Map<String, Integer> books = new HashMap<>();
-                books.put(rs.getString("bookId"), rs.getInt("quantity"));
+                books.put(rs.getString("itemid"), rs.getInt("quantity"));
                 tableView.getItems().add(new Order(rs.getInt("id"), rs.getString("customer"), books, rs.getDouble("totalPrice"), rs.getString("timeCreated")));
             }
         } catch (SQLException e) {
@@ -90,26 +90,26 @@ public class ManageOrdersController {
         Map<TextField, TextField> bookFields = new HashMap<>();
         final int[] row = {1};
 
-        TextField bookIdField = new TextField();
-        bookIdField.setPromptText("Book ID");
+        TextField itemidField = new TextField();
+        itemidField.setPromptText("Book ID");
         TextField quantityField = new TextField();
         quantityField.setPromptText("Quantity");
 
         Label totalPriceLabel = new Label("Total Price: €0,00");
         vbox.getChildren().add(totalPriceLabel);
 
-        bookIdField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(bookFields, totalPriceLabel));
+        itemidField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(bookFields, totalPriceLabel));
         quantityField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(bookFields, totalPriceLabel));
 
         GridPane bookGrid = new GridPane();
         bookGrid.setHgap(10);
         bookGrid.setVgap(10);
         bookGrid.add(new Label("Book ID:"), 0, row[0]);
-        bookGrid.add(bookIdField, 1, row[0]);
+        bookGrid.add(itemidField, 1, row[0]);
         bookGrid.add(new Label("Quantity:"), 2, row[0]);
         bookGrid.add(quantityField, 3, row[0]);
 
-        bookFields.put(bookIdField, quantityField);
+        bookFields.put(itemidField, quantityField);
 
         Button addBookButton = new Button("Add Book");
         vbox.getChildren().add(bookGrid);
@@ -117,20 +117,20 @@ public class ManageOrdersController {
 
         addBookButton.setOnAction(e -> {
             row[0]++;
-            TextField newBookIdField = new TextField();
-            newBookIdField.setPromptText("Book ID");
+            TextField newitemidField = new TextField();
+            newitemidField.setPromptText("Book ID");
             TextField newQuantityField = new TextField();
             newQuantityField.setPromptText("Quantity");
 
-            newBookIdField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(bookFields, totalPriceLabel));
+            newitemidField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(bookFields, totalPriceLabel));
             newQuantityField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(bookFields, totalPriceLabel));
 
             bookGrid.add(new Label("Book ID:"), 0, row[0]);
-            bookGrid.add(newBookIdField, 1, row[0]);
+            bookGrid.add(newitemidField, 1, row[0]);
             bookGrid.add(new Label("Quantity:"), 2, row[0]);
             bookGrid.add(newQuantityField, 3, row[0]);
 
-            bookFields.put(newBookIdField, newQuantityField);
+            bookFields.put(newitemidField, newQuantityField);
         });
 
         ScrollPane scrollPane = new ScrollPane(vbox);
@@ -142,9 +142,9 @@ public class ManageOrdersController {
                 String customer = customerField.getText();
                 Map<String, Integer> books = new HashMap<>();
                 for (Map.Entry<TextField, TextField> entry : bookFields.entrySet()) {
-                    String bookId = entry.getKey().getText();
+                    String itemid = entry.getKey().getText();
                     int quantity = Integer.parseInt(entry.getValue().getText());
-                    books.put(bookId, quantity);
+                    books.put(itemid, quantity);
                 }
                 double totalPrice = calculateTotalPrice(books);
                 return new Order(0, customer, books, totalPrice, java.time.LocalDateTime.now().toString());
@@ -188,13 +188,13 @@ public class ManageOrdersController {
             bookGrid.setHgap(10);
             bookGrid.setVgap(10);
             for (Map.Entry<String, Integer> entry : selectedOrder.getBooks().entrySet()) {
-                TextField bookIdField = new TextField(entry.getKey());
+                TextField itemidField = new TextField(entry.getKey());
                 TextField quantityField = new TextField(entry.getValue().toString());
                 bookGrid.add(new Label("Book ID:"), 0, row[0]);
-                bookGrid.add(bookIdField, 1, row[0]);
+                bookGrid.add(itemidField, 1, row[0]);
                 bookGrid.add(new Label("Quantity:"), 2, row[0]);
                 bookGrid.add(quantityField, 3, row[0]);
-                bookFields.put(bookIdField, quantityField);
+                bookFields.put(itemidField, quantityField);
                 row[0]++;
             }
 
@@ -207,20 +207,20 @@ public class ManageOrdersController {
 
             addBookButton.setOnAction(e -> {
                 row[0]++;
-                TextField newBookIdField = new TextField();
-                newBookIdField.setPromptText("Book ID");
+                TextField newitemidField = new TextField();
+                newitemidField.setPromptText("Book ID");
                 TextField newQuantityField = new TextField();
                 newQuantityField.setPromptText("Quantity");
 
-                newBookIdField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(bookFields, totalPriceLabel));
+                newitemidField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(bookFields, totalPriceLabel));
                 newQuantityField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(bookFields, totalPriceLabel));
 
                 bookGrid.add(new Label("Book ID:"), 0, row[0]);
-                bookGrid.add(newBookIdField, 1, row[0]);
+                bookGrid.add(newitemidField, 1, row[0]);
                 bookGrid.add(new Label("Quantity:"), 2, row[0]);
                 bookGrid.add(newQuantityField, 3, row[0]);
 
-                bookFields.put(newBookIdField, newQuantityField);
+                bookFields.put(newitemidField, newQuantityField);
             });
 
             ScrollPane scrollPane = new ScrollPane(vbox);
@@ -232,9 +232,9 @@ public class ManageOrdersController {
                     String customer = customerField.getText();
                     Map<String, Integer> books = new HashMap<>();
                     for (Map.Entry<TextField, TextField> entry : bookFields.entrySet()) {
-                        String bookId = entry.getKey().getText();
+                        String itemid = entry.getKey().getText();
                         int quantity = Integer.parseInt(entry.getValue().getText());
-                        books.put(bookId, quantity);
+                        books.put(itemid, quantity);
                     }
                     double totalPrice = calculateTotalPrice(books);
                     return new Order(selectedOrder.getId(), customer, books, totalPrice, java.time.LocalDateTime.now().toString());
@@ -317,11 +317,11 @@ public class ManageOrdersController {
         double totalPrice = 0.0;
 
         while (rs.next()) {
-            String bookId = rs.getString("bookId");
+            String itemid = rs.getString("itemid");
             int quantity = rs.getInt("quantity");
-            books.put(bookId, books.getOrDefault(bookId, 0) + quantity);
-            bookTitles.put(bookId, DatabaseUtil.getBookTitleById(bookId));
-            totalPrice += DatabaseUtil.getBookPriceById(bookId) * quantity;
+            books.put(itemid, books.getOrDefault(itemid, 0) + quantity);
+            bookTitles.put(itemid, DatabaseUtil.getBookTitleById(itemid));
+            totalPrice += DatabaseUtil.getBookPriceById(itemid) * quantity;
         }
 
         return new Bill(customer, books, bookTitles, totalPrice, timeCreated);
@@ -344,9 +344,9 @@ public class ManageOrdersController {
         double totalPrice = 0.0;
         for (Map.Entry<TextField, TextField> entry : bookFields.entrySet()) {
             try {
-                String bookId = entry.getKey().getText();
+                String itemid = entry.getKey().getText();
                 int quantity = Integer.parseInt(entry.getValue().getText());
-                double price = DatabaseUtil.getBookPriceById(bookId);
+                double price = DatabaseUtil.getBookPriceById(itemid);
                 totalPrice += price * quantity;
             } catch (NumberFormatException | SQLException e) {
                 // Handle exception

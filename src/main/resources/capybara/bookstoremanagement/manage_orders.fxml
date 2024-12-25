@@ -20,6 +20,7 @@
                 <Button text="Add Order" onAction="#handleAddOrder"/>
                 <Button text="Edit Order" onAction="#handleEditOrder"/>
                 <Button text="Delete Order" onAction="#handleDeleteOrder"/>
+                <Button text="Generate Bill" onAction="#handleGenerateBill"/>
                 <Button text="Return to Menu" onAction="#handleReturnToMenu"/>
             </children>
         </HBox>

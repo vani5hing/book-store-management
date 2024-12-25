@@ -314,4 +314,36 @@ public class DatabaseUtil {
             return null;
         }
     }
+
+    public static ResultSet getOrdersByCustomer(String customer) throws SQLException {
+        Connection conn = connect();
+        String query = "SELECT * FROM orders WHERE customer = ?";
+        PreparedStatement stmt = conn.prepareStatement(query);
+        stmt.setString(1, customer);
+        return stmt.executeQuery();
+    }
+
+    public static ResultSet getAllBills() throws SQLException {
+
+        Connection connection = DriverManager.getConnection("jdbc:your_database_url", "username", "password");
+
+        Statement statement = connection.createStatement();
+
+        return statement.executeQuery("SELECT * FROM bills");
+
+    }
+
+    public static String getBookTitleById(String bookId) throws SQLException {
+        String sql = "SELECT title FROM books WHERE bookId = ?";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, bookId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("title");
+            } else {
+                throw new SQLException("Book not found");
+            }
+        }
+    }
+
 }

@@ -7,4 +7,5 @@
     <!-- <Label text="Manager View" /> -->
     <!-- Add manage employee function here -->
     <Button text="Manage Employees" onAction="#handleManageEmployees" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;"/>
+    <Button text="Financial Analysis" onAction="#handleFinancialAnalysis" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;"/>
 </VBox>

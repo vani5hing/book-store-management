@@ -19,6 +19,7 @@
             <children>
                 <Button text="Add Toy" onAction="#handleAddToy"/>
                 <Button text="Delete Toy" onAction="#handleDeleteToy"/>
+                <Button text="Calculate Toy Revenue" onAction="#handleCalculateRevenue"/>
                 <Button text="Return to Manage Items" onAction="#handleReturnToMenu"/>
             </children>
         </HBox>

@@ -8,12 +8,14 @@ public class Order {
     private String customer;
     private Map<String, Integer> books; // Map of bookId to quantity
     private double totalPrice;
+    private String timeCreated;
 
-    public Order(int id, String customer, Map<String, Integer> books, double totalPrice) {
+    public Order(int id, String customer, Map<String, Integer> books, double totalPrice, String timeCreated) {
         this.id = id;
         this.customer = customer;
         this.books = books;
         this.totalPrice = totalPrice;
+        this.timeCreated = timeCreated;
     }
 
     public int getId() {
@@ -34,6 +36,10 @@ public class Order {
 
     public double getTotalPrice() {
         return totalPrice;
+    }
+
+    public String getTimeCreated() {
+        return timeCreated;
     }
 
     public String getBooksFormatted() {

@@ -165,4 +165,14 @@ public class ManageToysController {
             e.printStackTrace();
         }
     }
+    @FXML
+    private void handleCalculateRevenue(ActionEvent event) {
+        try {
+            double toyRevenue = DatabaseUtil.getToyRevenue();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Total Toy Revenue: $" + toyRevenue, ButtonType.OK);
+            alert.showAndWait();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

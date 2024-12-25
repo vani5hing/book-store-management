@@ -55,13 +55,22 @@ public class DatabaseUtil {
                                  + "FOREIGN KEY(bookId) REFERENCES books(bookId)"
                                  + ");";
 
+        String createToysTable = "CREATE TABLE IF NOT EXISTS toys ("
+                                 + "id TEXT PRIMARY KEY, "
+                                 + "name TEXT NOT NULL, "
+                                 + "origin TEXT NOT NULL, "
+                                 + "age_limit TEXT NOT NULL, "
+                                 + "price REAL NOT NULL"
+                                 + ");";
+
         try (Connection conn = connect(); Statement stmt = conn.createStatement()) {
             stmt.execute(createBooksTable);
             stmt.execute(createAccountsTable);
             stmt.execute(createCustomersTable);
             stmt.execute(createEmployeesTable);
             stmt.execute(createOrdersTable);
-            System.out.println("Tables 'books', 'accounts', 'customers', 'employees', and 'orders' created or already exist.");
+            stmt.execute(createToysTable);
+            System.out.println("Tables 'books', 'accounts', 'customers', 'employees', 'toys' and 'orders' created or already exist.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -299,5 +308,50 @@ public class DatabaseUtil {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static void createToy(String id, String name, String origin, String ageLimit, double price) throws SQLException {
+        String sql = "INSERT INTO toys(id, name, origin, age_limit, price) VALUES(?, ?, ?, ?, ?)";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, id);
+            pstmt.setString(2, name);
+            pstmt.setString(3, origin);
+            pstmt.setString(4, ageLimit);
+            pstmt.setDouble(5, price);
+            pstmt.executeUpdate();
+        }
+    }
+
+    public static void deleteToy(String id) throws SQLException {
+        String sql = "DELETE FROM toys WHERE id = ?";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, id);
+            pstmt.executeUpdate();
+        }
+    }
+
+    public static String generateUniqueToyId() throws SQLException {
+        Random random = new Random();
+        String toyId;
+        do {
+            toyId = String.format("TOY-%04d-%c", random.nextInt(10000), (char) (random.nextInt(26) + 'A'));
+        } while (isToyIdExists(toyId));
+        return toyId;
+    }
+    
+    private static boolean isToyIdExists(String toyId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM toys WHERE id = ?";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, toyId);
+            ResultSet rs = pstmt.executeQuery();
+            rs.next();
+            return rs.getInt(1) > 0;
+        }
+    }
+
+    public static ResultSet getAllToys() throws SQLException {
+        String sql = "SELECT * FROM toys";
+        Connection conn = connect();
+        return conn.createStatement().executeQuery(sql);
     }
 }

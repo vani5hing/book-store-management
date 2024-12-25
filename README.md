@@ -8,7 +8,7 @@ The **Bookstore Management System** is a comprehensive and efficient solution de
 ## 📸 **Screenshots**
 - **Login Screen:**  
   ![Login Screen](https://github.com/respectthanh/book-store-management/blob/main/login.png)
-- **Admin Dashboard:**  
+- **Main menu:**  
   ![Main Menu](https://github.com/respectthanh/book-store-management/blob/main/Main%20menu.png)
 - **Book Management:**  
   ![Book Management](https://github.com/respectthanh/book-store-management/blob/main/Book%20management.png)

@@ -7,10 +7,10 @@
     <children>
         <!-- <Label text="Manage Books" layoutX="20" layoutY="20"/> -->
         <TextField fx:id="searchField" promptText="Search..." layoutX="90" layoutY="20" onKeyReleased="#handleSearch"/>
-        <TableView fx:id="tableView" layoutX="90" layoutY="60" prefWidth="1150" prefHeight="400">            
+        <TableView fx:id="tableView" layoutX="90" layoutY="60" prefWidth="900" prefHeight="400">            
             <columns>
-                <TableColumn fx:id="colId" text="ID" prefWidth="200"/>
-                <TableColumn fx:id="colTitle" text="Title" prefWidth="400"/>
+                <TableColumn fx:id="colId" text="ID" prefWidth="150"/>
+                <TableColumn fx:id="colTitle" text="Title" prefWidth="200"/>
                 <TableColumn fx:id="colAuthor" text="Author" prefWidth="200"/>
                 <TableColumn fx:id="colYear" text="Year" prefWidth="50"/>
                 <TableColumn fx:id="colGenre" text="Genre" prefWidth="100"/>
@@ -19,7 +19,7 @@
                 <TableColumn fx:id="colStock" text="Stock" prefWidth="50"/>
             </columns>
         </TableView>
-        <HBox layoutX="20" layoutY="480" spacing="20">
+        <HBox layoutX="90" layoutY="480" spacing="20">
             <children>
                 <Button text="Add Book" onAction="#handleAdd"/>
                 <Button text="Edit Book" onAction="#handleEditBook"/>

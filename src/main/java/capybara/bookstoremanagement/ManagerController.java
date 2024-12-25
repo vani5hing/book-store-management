@@ -12,12 +12,17 @@ public class ManagerController {
 
     @FXML
     private void handleManageEmployees(ActionEvent event) {
-        navigateToView(event, "manage_employees");
+        navigateToViewWithPrevious(event, "manage_employees", "manager_view");
     }
 
-    private void navigateToView(ActionEvent event, String viewName) {
+    private void navigateToViewWithPrevious(ActionEvent event, String viewName, String previousView) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource(viewName + ".fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(viewName + ".fxml"));
+            Parent root = loader.load();
+            Object controller = loader.getController();
+            if (controller instanceof ManageEmployeesController) {
+                ((ManageEmployeesController) controller).setPreviousView(previousView);
+            }
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 640, 540));
             stage.show();

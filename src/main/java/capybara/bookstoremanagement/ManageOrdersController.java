@@ -2,14 +2,14 @@ package capybara.bookstoremanagement;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -154,7 +154,9 @@ public class ManageOrdersController {
             try {
                 DatabaseUtil.createOrder(order.getCustomer(), order.getBooks(), order.getTotalPrice());
                 loadOrders();
-            } catch (SQLException e) {
+                Bill bill = generateBillForCustomer(order.getCustomer());
+                displayBill(bill);
+            } catch (SQLException | IOException e) {
                 e.printStackTrace();
             }
         });
@@ -277,6 +279,54 @@ public class ManageOrdersController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void handleGenerateBill(ActionEvent event) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Generate Bill");
+        dialog.setHeaderText("Enter the customer name to generate the bill");
+        dialog.setContentText("Customer:");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(customer -> {
+            try {
+                Bill bill = generateBillForCustomer(customer);
+                displayBill(bill);
+            } catch (SQLException | IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private Bill generateBillForCustomer(String customer) throws SQLException {
+        ResultSet rs = DatabaseUtil.getOrdersByCustomer(customer);
+        Map<String, Integer> books = new HashMap<>();
+        Map<String, String> bookTitles = new HashMap<>();
+        double totalPrice = 0.0;
+
+        while (rs.next()) {
+            String bookId = rs.getString("bookId");
+            int quantity = rs.getInt("quantity");
+            books.put(bookId, books.getOrDefault(bookId, 0) + quantity);
+            bookTitles.put(bookId, DatabaseUtil.getBookTitleById(bookId));
+            totalPrice += DatabaseUtil.getBookPriceById(bookId) * quantity;
+        }
+
+        return new Bill(customer, books, bookTitles, totalPrice);
+    }
+
+    private void displayBill(Bill bill) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("bill_view.fxml"));
+        Parent root = loader.load();
+
+        BillViewController controller = loader.getController();
+        controller.setBill(bill);
+
+        Stage stage = new Stage();
+        stage.setTitle("Bill for " + bill.getCustomer());
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 
     private void calculateTotalPrice(Map<TextField, TextField> bookFields, Label totalPriceLabel) {

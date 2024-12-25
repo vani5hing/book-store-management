@@ -1,0 +1,5 @@
+Bill for customer: Kien
+Books:
+ID: 978-0-85925-227-0, Title: Radio whether try, Quantity: 1212
+ID: 978-1-376-59205-4, Title: Official fund group, Quantity: 123
+Total Price: $53724,90

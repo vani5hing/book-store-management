@@ -1,0 +1,4 @@
+Bill for customer: Thanh
+Books:
+Book ID: 929079, Title: 1, Quantity: 2
+Total Price: €14,40

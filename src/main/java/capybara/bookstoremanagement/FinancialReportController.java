@@ -1,9 +1,9 @@
 package capybara.bookstoremanagement;
 
+import java.sql.SQLException;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-
-import java.sql.SQLException;
 
 public class FinancialReportController {
 

@@ -10,16 +10,16 @@
 
 <AnchorPane maxHeight="640.0" maxWidth="1080.0" minHeight="640.0" minWidth="1080.0" prefHeight="640.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="capybara.bookstoremanagement.LoginController">
     <children>
-      <ImageView fitHeight="654.0" fitWidth="1139.0" layoutX="-41.0" layoutY="-6.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@login_bg.png" />
-         </image>
-      </ImageView>
+        <ImageView fitHeight="654.0" fitWidth="1139.0" layoutX="-41.0" layoutY="-6.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@login_bg.png" />
+            </image>
+        </ImageView>
 
         <Label layoutX="41.0" layoutY="200.0" prefHeight="25.0" prefWidth="82.0" style="-fx-background-color: #E8C872; -fx-border-color: #4A4A4A;" text="  Username:" />
         <TextField fx:id="usernameField" layoutX="150.0" layoutY="200.0" style="-fx-border-color: #4A4A4A;" />
         <Label layoutX="41.0" layoutY="251.0" prefHeight="23.0" prefWidth="82.0" style="-fx-background-color: #E8C872; -fx-border-color: #4a4a4a;" text="  Password:" />
         <PasswordField fx:id="passwordField" layoutX="150.0" layoutY="250.0" style="-fx-border-color: #4A4A4A;" />
-        <Button layoutX="150.0" layoutY="300.0" onAction="#handleLoginAction" style="-fx-background-color: #1A73E8;" text="Login" />
+        <Button layoutX="150.0" layoutY="300.0" onAction="#handleLoginAction" style="-fx-background-color: #1A73E8;" text="Login" defaultButton="true" />
     </children>
 </AnchorPane>

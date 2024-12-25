@@ -301,15 +301,13 @@ private void handleAddOrder(ActionEvent event) {
     phoneResult.ifPresent(phone -> {
         try {
             if (!DatabaseUtil.isCustomerExistsByPhone(phone)) {
-                // Show error message if customer does not exist
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Customer Not Found");
                 alert.setHeaderText(null);
                 alert.setContentText("The customer with the provided phone number does not exist.");
                 alert.showAndWait();
             } else {
-                // Continue processing the order
-                openAddOrderDialog(phone);
+                openAddOrderDialog(phone); // Mở hộp thoại để thêm đơn hàng
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -341,7 +339,7 @@ private void openAddOrderDialog(String phone) {
     TextField quantityField = new TextField();
     quantityField.setPromptText("Quantity");
 
-    Label totalPriceLabel = new Label("Total Price: €0,00");
+    Label totalPriceLabel = new Label("Total Price: $0,00");
     vbox.getChildren().add(totalPriceLabel);
 
     itemidField.textProperty().addListener((observable, oldValue, newValue) -> calculateTotalPrice(itemFields, totalPriceLabel));

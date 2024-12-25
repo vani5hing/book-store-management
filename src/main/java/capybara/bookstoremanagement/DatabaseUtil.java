@@ -604,11 +604,15 @@ public class DatabaseUtil {
 
     public static boolean isCustomerExistsByPhone(String phone) throws SQLException {
         String sql = "SELECT COUNT(*) FROM customers WHERE phone = ?";
-        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
-            pstmt.setString(1, phone);
-            rs.next();
-            return rs.getInt(1) > 0;
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, phone); // Đặt giá trị tham số
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
         }
+        return false;
     }
     public static ResultSet getLatestOrderTimeByCustomer(String customer) throws SQLException {
         String query = "SELECT MAX(timeCreated) AS latest_time FROM orders WHERE customer = ?";

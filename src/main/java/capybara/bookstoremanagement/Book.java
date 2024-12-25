@@ -2,7 +2,7 @@ package capybara.bookstoremanagement;
 
 public class Book extends Item {
     private int id;
-    private String bookId;
+    private String itemid;
     private String title;
     private String author;
 
@@ -10,9 +10,9 @@ public class Book extends Item {
         super(name, origin, price, quantity);
     }
 
-    public Book(int id, String bookId, String title, String author, double price) {
+    public Book(int id, String itemid, String title, String author, double price) {
         this.id = id;
-        this.bookId = bookId;
+        this.itemid = itemid;
         this.title = title;
         this.author = author;
         this.price = price;
@@ -22,8 +22,8 @@ public class Book extends Item {
         return id;
     }
 
-    public String getBookId() {
-        return bookId;
+    public String getitemid() {
+        return itemid;
     }
 
     public String getTitle() {

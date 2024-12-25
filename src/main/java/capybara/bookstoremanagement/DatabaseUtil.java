@@ -20,7 +20,7 @@ public class DatabaseUtil {
     public static void createTables() {
         String createBooksTable = "CREATE TABLE IF NOT EXISTS books ("
                                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                                + "bookId TEXT NOT NULL UNIQUE, "
+                                + "itemid TEXT NOT NULL UNIQUE, "
                                 + "title TEXT NOT NULL, "
                                 + "author TEXT NOT NULL, "
                                 + "price REAL NOT NULL"
@@ -50,10 +50,10 @@ public class DatabaseUtil {
         String createOrdersTable = "CREATE TABLE IF NOT EXISTS orders ("
                                  + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                                  + "customer TEXT NOT NULL, "
-                                 + "bookId TEXT NOT NULL, "
+                                 + "itemid TEXT NOT NULL, "
                                  + "quantity INTEGER NOT NULL, "
                                  + "totalPrice REAL NOT NULL, "
-                                 + "FOREIGN KEY(bookId) REFERENCES books(bookId)"
+                                 + "FOREIGN KEY(itemid) REFERENCES books(itemid)"
                                  + ");";
 
         String createToysTable = "CREATE TABLE IF NOT EXISTS toys ("
@@ -156,10 +156,10 @@ public class DatabaseUtil {
         return conn.createStatement().executeQuery(sql);
     }
 
-    public static void createBook(String bookId, String title, String author, double price) throws SQLException {
-        String sql = "INSERT INTO books(bookId, title, author, price) VALUES(?, ?, ?, ?)";
+    public static void createBook(String itemid, String title, String author, double price) throws SQLException {
+        String sql = "INSERT INTO books(itemid, title, author, price) VALUES(?, ?, ?, ?)";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, bookId);
+            pstmt.setString(1, itemid);
             pstmt.setString(2, title);
             pstmt.setString(3, author);
             pstmt.setDouble(4, price);
@@ -192,26 +192,26 @@ public class DatabaseUtil {
         return conn.createStatement().executeQuery(sql);
     }
 
-    public static boolean isBookIdExists(String bookId) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM books WHERE bookId = ?";
+    public static boolean isitemidExists(String itemid) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM books WHERE itemid = ?";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, bookId);
+            pstmt.setString(1, itemid);
             ResultSet rs = pstmt.executeQuery();
             rs.next();
             return rs.getInt(1) > 0;
         }
     }
 
-    public static String generateUniqueBookId() throws SQLException {
+    public static String generateUniqueitemid() throws SQLException {
         Random random = new Random();
-        String bookId;
+        String itemid;
         do {
-            bookId = String.format("978-0-%05d-%03d-%d", 
+            itemid = String.format("978-0-%05d-%03d-%d", 
                                    random.nextInt(100000), 
                                    random.nextInt(1000), 
                                    random.nextInt(10));
-        } while (isBookIdExists(bookId));
-        return bookId;
+        } while (isitemidExists(itemid));
+        return itemid;
     }
 
     public static void createCustomer(String name, String email, String phone) throws SQLException {
@@ -282,40 +282,24 @@ public class DatabaseUtil {
         return conn.createStatement().executeQuery(sql);
     }
 
-    public static void createOrder(String customer, Map<String, Integer> books, double totalPrice) throws SQLException {
-        String sql = "INSERT INTO orders(customer, bookId, quantity, totalPrice, timeCreated) VALUES(?, ?, ?, ?, datetime('now'))";
-        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            for (Map.Entry<String, Integer> entry : books.entrySet()) {
-                pstmt.setString(1, customer);
-                pstmt.setString(2, entry.getKey());
-                pstmt.setInt(3, entry.getValue());
-                pstmt.setDouble(4, totalPrice);
-                pstmt.addBatch();
-            }
-            pstmt.executeBatch();
-        }
-    }
-
-    public static void updateOrder(int id, String customer, Map<String, Integer> books, double totalPrice) throws SQLException {
+    public static void updateOrder(int id, String customer, String itemid, int quantity, double totalPrice) throws SQLException {
         String deleteSql = "DELETE FROM orders WHERE id = ?";
-        String insertSql = "INSERT INTO orders(id, customer, bookId, quantity, totalPrice, timeCreated) VALUES(?, ?, ?, ?, ?, datetime('now'))";
+        String insertSql = "INSERT INTO orders(id, customer, itemid, quantity, totalPrice, timeCreated) VALUES(?, ?, ?, ?, ?, datetime('now'))";
         try (Connection conn = connect(); 
              PreparedStatement deletePstmt = conn.prepareStatement(deleteSql);
              PreparedStatement insertPstmt = conn.prepareStatement(insertSql)) {
             deletePstmt.setInt(1, id);
             deletePstmt.executeUpdate();
 
-            for (Map.Entry<String, Integer> entry : books.entrySet()) {
-                insertPstmt.setInt(1, id);
-                insertPstmt.setString(2, customer);
-                insertPstmt.setString(3, entry.getKey());
-                insertPstmt.setInt(4, entry.getValue());
-                insertPstmt.setDouble(5, totalPrice);
-                insertPstmt.addBatch();
-            }
-            insertPstmt.executeBatch();
+            insertPstmt.setInt(1, id);
+            insertPstmt.setString(2, customer);
+            insertPstmt.setString(3, itemid);
+            insertPstmt.setInt(4, quantity);
+            insertPstmt.setDouble(5, totalPrice);
+            insertPstmt.executeUpdate();
         }
     }
+
 
 
     public static void deleteOrder(int id) throws SQLException {
@@ -343,10 +327,10 @@ public class DatabaseUtil {
                 throw new SQLException("Book not found");
             }
         }
-    }public static double getBookPriceById(String bookId) throws SQLException {
-        String sql = "SELECT price FROM books WHERE bookId = ?";
+    }public static double getBookPriceById(String itemid) throws SQLException {
+        String sql = "SELECT price FROM books WHERE itemid = ?";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, bookId);
+            pstmt.setString(1, itemid);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return rs.getDouble("price");
@@ -447,10 +431,10 @@ public class DatabaseUtil {
 
     }
 
-    public static String getBookTitleById(String bookId) throws SQLException {
-        String sql = "SELECT title FROM books WHERE bookId = ?";
+    public static String getBookTitleById(String itemid) throws SQLException {
+        String sql = "SELECT title FROM books WHERE itemid = ?";
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, bookId);
+            pstmt.setString(1, itemid);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return rs.getString("title");
@@ -542,6 +526,7 @@ public class DatabaseUtil {
         return pstmt.executeQuery();
     }
 
+
     public static ResultSet getMostRecentOrdersByCustomer(String customer) throws SQLException {
         String sql = "SELECT * FROM orders WHERE customer = ? ORDER BY timeCreated DESC";
         Connection conn = connect();
@@ -575,4 +560,55 @@ public class DatabaseUtil {
         Connection conn = connect();
         return conn.createStatement().executeQuery(sql);
     }
-}
+
+    
+    public static double getItemPriceById(String itemid) throws SQLException {
+        String sql = "SELECT price FROM books WHERE id = ? UNION SELECT price FROM stationeries WHERE id = ? UNION SELECT price FROM toys WHERE id = ?";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, itemid);
+            pstmt.setString(2, itemid);
+            pstmt.setString(3, itemid);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble("price");
+            }
+        }
+        return 0.0;
+    }
+
+
+    public static void addOrder(String customer, String itemid, int quantity, double totalPrice) throws SQLException {
+        String sql = "INSERT INTO orders(customer, itemid, quantity, totalPrice, timeCreated) VALUES(?, ?, ?, ?, datetime('now'))";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, customer);
+            pstmt.setString(2, itemid);
+            pstmt.setInt(3, quantity);
+            pstmt.setDouble(4, totalPrice);
+            pstmt.executeUpdate();
+        }
+    }
+
+    public static String getItemTitleById(String itemid) throws SQLException {
+        String sql = "SELECT title FROM books WHERE id = ? UNION SELECT name FROM stationeries WHERE id = ? UNION SELECT name FROM toys WHERE id = ?";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, itemid);
+            pstmt.setString(2, itemid);
+            pstmt.setString(3, itemid);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("title");
+            }
+        }
+        return null;
+    }
+
+    public static boolean isCustomerExistsByPhone(String phone) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM customers WHERE phone = ?";
+        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
+            pstmt.setString(1, phone);
+            rs.next();
+            return rs.getInt(1) > 0;
+        }
+    }
+
+    }

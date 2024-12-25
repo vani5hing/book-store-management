@@ -28,7 +28,7 @@ public class ManageBooksController {
     @FXML
     private TableColumn<Book, Integer> colId;
     @FXML
-    private TableColumn<Book, String> colBookId;
+    private TableColumn<Book, String> colitemid;
     @FXML
     private TableColumn<Book, String> colTitle;
     @FXML
@@ -50,7 +50,7 @@ public class ManageBooksController {
     @FXML
     public void initialize() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colBookId.setCellValueFactory(new PropertyValueFactory<>("bookId"));
+        colitemid.setCellValueFactory(new PropertyValueFactory<>("itemid"));
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
         colAuthor.setCellValueFactory(new PropertyValueFactory<>("author"));
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
@@ -63,7 +63,7 @@ public class ManageBooksController {
         try {
             ResultSet rs = DatabaseUtil.getAllBooks();
             while (rs.next()) {
-                tableView.getItems().add(new Book(rs.getInt("id"), rs.getString("bookId"), rs.getString("title"), rs.getString("author"), rs.getDouble("price")));
+                tableView.getItems().add(new Book(rs.getInt("id"), rs.getString("itemid"), rs.getString("title"), rs.getString("author"), rs.getDouble("price")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -105,11 +105,11 @@ public class ManageBooksController {
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == addButtonType) {
                 try {
-                    String bookId = DatabaseUtil.generateUniqueBookId();
+                    String itemid = DatabaseUtil.generateUniqueitemid();
                     String title = titleField.getText();
                     String author = authorField.getText();
                     double price = Double.parseDouble(priceField.getText());
-                    return new Book(0, bookId, title, author, price);
+                    return new Book(0, itemid, title, author, price);
                 } catch (SQLException e) {
                     e.printStackTrace();
                     return null;
@@ -121,7 +121,7 @@ public class ManageBooksController {
         Optional<Book> result = dialog.showAndWait();
         result.ifPresent(book -> {
             try {
-                DatabaseUtil.createBook(book.getBookId(), book.getTitle(), book.getAuthor(), book.getPrice());
+                DatabaseUtil.createBook(book.getitemid(), book.getTitle(), book.getAuthor(), book.getPrice());
                 loadBooks();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -165,7 +165,7 @@ public class ManageBooksController {
                     String title = titleField.getText();
                     String author = authorField.getText();
                     double price = Double.parseDouble(priceField.getText());
-                    return new Book(selectedBook.getId(), selectedBook.getBookId(), title, author, price);
+                    return new Book(selectedBook.getId(), selectedBook.getitemid(), title, author, price);
                 }
                 return null;
             });

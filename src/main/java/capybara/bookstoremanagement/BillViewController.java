@@ -29,7 +29,7 @@ public class BillViewController {
         StringBuilder booksText = new StringBuilder();
         for (Map.Entry<String, Integer> entry : bill.getBooks().entrySet()) {
             String bookTitle = bill.getBookTitles().get(entry.getKey());
-            booksText.append("Book ID: ").append(entry.getKey()).append(", Title: ").append(bookTitle).append(", Quantity: ").append(entry.getValue()).append("\n");
+            booksText.append("itemid: ").append(entry.getKey()).append(", Title: ").append(bookTitle).append(", Quantity: ").append(entry.getValue()).append("\n");
         }
         booksTextArea.setText(booksText.toString());
         totalPriceLabel.setText("Total Price: $" + String.format("%.2f", bill.getTotalPrice()).replace('.', ','));

@@ -88,7 +88,7 @@ Follow the steps below to set up the project locally:
     ```
 5. **Access the Application:**
     - Default Admin Username: `admin`
-    - Default Admin Password: `password`
+    - Default Admin Password: `admin`
 
 ---
 

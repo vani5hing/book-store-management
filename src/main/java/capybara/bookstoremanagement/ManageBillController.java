@@ -144,7 +144,7 @@ public class ManageBillController {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/capybara/bookstoremanagement/main_menu.fxml"));
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 640, 480));
+            stage.setScene(new Scene(root, 1080, 640));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

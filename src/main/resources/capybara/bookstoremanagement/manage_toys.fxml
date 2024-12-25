@@ -21,7 +21,7 @@
             <children>
                 <Button text="Add Toy" onAction="#handleAdd"/>
                 <Button text="Delete Toy" onAction="#handleDelete"/>
-                <Button text="Calculate Toy Revenue" onAction="#handleCalculateRevenue"/>
+                <!-- <Button text="Calculate Toy Revenue" onAction="#handleCalculateRevenue"/> -->
                 <Button text="Return to Manage Items" onAction="#handleReturnToMenu"/>
             </children>
         </HBox>

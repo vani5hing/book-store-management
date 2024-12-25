@@ -16,6 +16,14 @@ public class ManagerController {
     private VBox vbox;
 
     @FXML
+    private Label greetingLabel;
+    private String username;
+    public void setUsername(String username) {
+        this.username = username;
+        greetingLabel.setText("How it's going, " + username + "?");
+    }
+
+    @FXML
     private void handleManageEmployees(ActionEvent event) {
         navigateToViewWithPrevious(event, "manage_employees", "manager_view");
     }
@@ -33,6 +41,11 @@ public class ManagerController {
     @FXML
     private void handleFinancialAnalysis(ActionEvent event) {
         navigateToViewWithPrevious(event, "financial_report", "manager_view");
+    }
+
+    @FXML
+    private void handleManageAccounts(ActionEvent event) {
+        navigateToViewWithPrevious(event, "manage_accounts", "manager_view");
     }
 
     @FXML
@@ -61,6 +74,8 @@ public class ManagerController {
                 ((ManageOrdersController) controller).setPreviousView(previousView);
             } else if (controller instanceof FinancialReportController) {
                 ((FinancialReportController) controller).setPreviousView(previousView);
+            } else if (controller instanceof ManageAccountController) {
+                ((ManageAccountController) controller).setPreviousView(previousView);
             }
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 1080, 640));

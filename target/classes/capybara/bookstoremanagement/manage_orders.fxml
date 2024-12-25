@@ -3,20 +3,20 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="capybara.bookstoremanagement.ManageOrdersController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="capybara.bookstoremanagement.ManageOrdersController">
     <children>
-        <Label text="Manage Orders" layoutX="20" layoutY="20"/>
-<TableView fx:id="tableView" layoutX="90" layoutY="60" prefWidth="900" prefHeight="400">
+        <TextField fx:id="searchField" promptText="Search..." layoutX="90" layoutY="20" onKeyReleased="#handleSearch"/>
+        <TableView fx:id="tableView" layoutX="90" layoutY="60" prefWidth="900" prefHeight="400">
             <columns>
-                <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
-                <TableColumn fx:id="colCustomer" text="Customer" prefWidth="100"/>
-                <TableColumn fx:id="colBooks" text="Books" prefWidth="300"/>
-                <TableColumn fx:id="colQuantities" text="Quantities" prefWidth="150"/>
-                <TableColumn fx:id="colTotalPrice" text="Total Price" prefWidth="150"/>
-                <TableColumn fx:id="colTimeCreated" text="Time Created" prefWidth="100"/>
+                <TableColumn fx:id="colId" text="ID" prefWidth="100"/>
+                <TableColumn fx:id="colCustomer" text="Customer Phone" prefWidth="200"/>
+                <TableColumn fx:id="colItemid" text="Item ID" prefWidth="100"/>
+                <TableColumn fx:id="colQuantity" text="Quantity" prefWidth="100"/>
+                <TableColumn fx:id="colTotalPrice" text="Total Price" prefWidth="200"/>
+                <TableColumn fx:id="colTimeCreated" text="Time Created" prefWidth="200"/>
             </columns>
         </TableView>
-        <HBox layoutX="20" layoutY="480" spacing="20">
+        <HBox layoutX="90" layoutY="480" spacing="20">
             <children>
                 <Button text="Add Order" onAction="#handleAddOrder"/>
                 <Button text="Edit Order" onAction="#handleEditOrder"/>

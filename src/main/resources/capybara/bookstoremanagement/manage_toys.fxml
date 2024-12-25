@@ -13,13 +13,14 @@
                 <TableColumn fx:id="colName" text="Name" prefWidth="300"/>
                 <TableColumn fx:id="colOrigin" text="Origin" prefWidth="200"/>
                 <TableColumn fx:id="colAgeLimit" text="Age Limit" prefWidth="200"/>
-                <TableColumn fx:id="colPrice" text="Price" prefWidth="100"/>
+                <TableColumn fx:id="colPrice" text="Price" prefWidth="50"/>
+                <TableColumn fx:id="colStock" text="Stock" prefWidth="50"/>
             </columns>
         </TableView>
         <HBox layoutX="90" layoutY="480" spacing="20">
             <children>
-                <Button text="Add Toy" onAction="#handleAddToy"/>
-                <Button text="Delete Toy" onAction="#handleDeleteToy"/>
+                <Button text="Add Toy" onAction="#handleAdd"/>
+                <Button text="Delete Toy" onAction="#handleDelete"/>
                 <Button text="Calculate Toy Revenue" onAction="#handleCalculateRevenue"/>
                 <Button text="Return to Manage Items" onAction="#handleReturnToMenu"/>
             </children>

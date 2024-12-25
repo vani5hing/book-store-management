@@ -25,7 +25,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-public class ManageToysController {
+public class ManageToysController extends ManageController {
     @FXML
     private TableView<Toy> tableView;
     @FXML
@@ -39,20 +39,11 @@ public class ManageToysController {
     @FXML
     private TableColumn<Toy, Double> colPrice;
     @FXML
+    private TableColumn<Toy, Integer> colStock;
+    @FXML
     private TextField searchField;
 
-    private String previousView;
-    private String previousViewOfManageItems;
-
     private FilteredList<Toy> filteredToys;
-
-    public void setPreviousView(String previousView) {
-        this.previousView = previousView;
-    }
-
-    public void setPreviousViewOfManageItems(String previousViewOfManageItems) {
-        this.previousViewOfManageItems = previousViewOfManageItems;
-    }
 
     @FXML
     public void initialize() {
@@ -61,16 +52,17 @@ public class ManageToysController {
         colOrigin.setCellValueFactory(new PropertyValueFactory<>("origin"));
         colAgeLimit.setCellValueFactory(new PropertyValueFactory<>("ageLimit"));
         colPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+        colStock.setCellValueFactory(new PropertyValueFactory<>("stock"));
 
-        loadToys();
+        load();
     }
 
-    private void loadToys() {
+    public void load() {
         try {
             ResultSet rs = DatabaseUtil.getAllToys();
             ObservableList<Toy> toyList = FXCollections.observableArrayList();
             while (rs.next()) {
-                toyList.add(new Toy(rs.getString("id"), rs.getString("name"), rs.getString("origin"), rs.getString("age_limit"), rs.getDouble("price")));
+                toyList.add(new Toy(rs.getString("id"), rs.getString("name"), rs.getString("origin"), rs.getString("age_limit"), rs.getDouble("price"), rs.getInt("stock"), rs.getDouble("cost")));
             }
             filteredToys = new FilteredList<>(toyList, p -> true);
             SortedList<Toy> sortedToys = new SortedList<>(filteredToys);
@@ -82,7 +74,7 @@ public class ManageToysController {
     }
 
     @FXML
-    private void handleSearch() {
+    public void handleSearch() {
         String searchText = searchField.getText().toLowerCase();
         filteredToys.setPredicate(toy -> {
             if (searchText == null || searchText.isEmpty()) {
@@ -95,16 +87,14 @@ public class ManageToysController {
     }
 
     @FXML
-    private void handleAddToy(ActionEvent event) {
+    public void handleAdd(ActionEvent event) {
         Dialog<Toy> dialog = new Dialog<>();
         dialog.setTitle("Add New Toy");
         dialog.setHeaderText("Enter the details of the new toy");
 
-        // Set the button types
         ButtonType addButtonType = new ButtonType("Add", ButtonType.OK.getButtonData());
         dialog.getDialogPane().getButtonTypes().addAll(addButtonType, ButtonType.CANCEL);
 
-        // Create the title, author, and price labels and fields
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
@@ -117,6 +107,10 @@ public class ManageToysController {
         ageLimitField.setPromptText("Age Limit");
         TextField priceField = new TextField();
         priceField.setPromptText("Price");
+        TextField stockField = new TextField();
+        stockField.setPromptText("Stock");
+        TextField costField = new TextField();
+        costField.setPromptText("Cost");
 
         grid.add(new Label("Name:"), 0, 0);
         grid.add(nameField, 1, 0);
@@ -126,10 +120,13 @@ public class ManageToysController {
         grid.add(ageLimitField, 1, 2);
         grid.add(new Label("Price:"), 0, 3);
         grid.add(priceField, 1, 3);
+        grid.add(new Label("Stock:"), 0, 4);
+        grid.add(stockField, 1, 4);
+        grid.add(new Label("Cost:"), 0, 5);
+        grid.add(costField, 1, 5);
 
         dialog.getDialogPane().setContent(grid);
 
-        // Convert the result to a Book object when the Add button is clicked
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == addButtonType) {
                 try {
@@ -138,7 +135,9 @@ public class ManageToysController {
                     String origin = originField.getText();
                     String ageLimit = ageLimitField.getText();
                     double price = Double.parseDouble(priceField.getText());
-                    return new Toy(id, name, origin, ageLimit, price);
+                    int stock = Integer.parseInt(stockField.getText());
+                    double cost = Double.parseDouble(costField.getText());
+                    return new Toy(id, name, origin, ageLimit, price, stock, cost);
                 } catch (SQLException e) {
                     e.printStackTrace();
                     return null;
@@ -150,8 +149,8 @@ public class ManageToysController {
         Optional<Toy> result = dialog.showAndWait();
         result.ifPresent(toy -> {
             try {
-                DatabaseUtil.createToy(toy.getId(), toy.getName(), toy.getOrigin(), toy.getAgeLimit(), toy.getPrice());
-                loadToys();
+                DatabaseUtil.createToy(toy.getId(), toy.getName(), toy.getOrigin(),toy.getAgeLimit() ,toy.getPrice(), toy.getStock(), toy.getCost());
+                load();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -159,7 +158,7 @@ public class ManageToysController {
     }
 
     @FXML
-    private void handleDeleteToy(ActionEvent event) {
+    public void handleDelete(ActionEvent event) {
         Toy selectedToy = tableView.getSelectionModel().getSelectedItem();
         if (selectedToy != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this toy?", ButtonType.YES, ButtonType.NO);
@@ -167,7 +166,7 @@ public class ManageToysController {
                 if (response == ButtonType.YES) {
                     try {
                         DatabaseUtil.deleteToy(selectedToy.getId());
-                        loadToys();
+                        load();
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -177,7 +176,7 @@ public class ManageToysController {
     }
 
     @FXML
-    private void handleReturnToMenu(ActionEvent event) {
+    public void handleReturnToMenu(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(previousView + ".fxml"));
             Parent root = loader.load();
@@ -190,6 +189,7 @@ public class ManageToysController {
             e.printStackTrace();
         }
     }
+
     @FXML
     private void handleCalculateRevenue(ActionEvent event) {
         try {

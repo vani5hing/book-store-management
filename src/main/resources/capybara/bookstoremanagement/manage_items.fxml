@@ -9,5 +9,6 @@
     <Label text="Manage which type of items?" styleClass="title-label"/>
     <Button text="Manage Books" onAction="#handleManageBooks" style="-fx-pref-width: 200px; -fx-pref-height: 40px"/>
     <Button text="Manage Toys" onAction="#handleManageToys" style="-fx-pref-width: 200px; -fx-pref-height: 40px"/>
+    <Button text="Manage Stationeries" onAction="#handleManageStationeries" style="-fx-pref-width: 200px; -fx-pref-height: 40px"/>
     <Button text="Return to menu" onAction="#handleReturnToMenu" style="-fx-pref-width: 200px; -fx-pref-height: 40px"/>
 </VBox>

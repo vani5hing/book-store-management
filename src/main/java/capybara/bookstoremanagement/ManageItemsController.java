@@ -27,6 +27,11 @@ public class ManageItemsController {
     }
 
     @FXML
+    private void handleManageStationeries(ActionEvent event) {
+        navigateToViewWithPrevious(event, "manage_stationeries", previousView);
+    }
+
+    @FXML
     private void handleReturnToMenu(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(previousView + ".fxml"));
@@ -48,6 +53,10 @@ public class ManageItemsController {
                 controller.setPreviousViewOfManageItems(previousView);
             } else if (viewName.equals("manage_toys")) {
                 ManageToysController controller = loader.getController();
+                controller.setPreviousView("manage_items");
+                controller.setPreviousViewOfManageItems(previousView);
+            } else if(viewName.equals("manage_stationeries")) {
+                ManageStationeriesController controller = loader.getController();
                 controller.setPreviousView("manage_items");
                 controller.setPreviousViewOfManageItems(previousView);
             }

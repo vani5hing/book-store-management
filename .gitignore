@@ -1,4 +1,5 @@
 target/
-*.db
+
 pom.xml
 *.class
+.py

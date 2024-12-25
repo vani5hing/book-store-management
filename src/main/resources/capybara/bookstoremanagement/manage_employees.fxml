@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="capybara.bookstoremanagement.ManageEmployeesController">
+<AnchorPane prefHeight="640.0" prefWidth="1080.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="capybara.bookstoremanagement.ManageEmployeesController">
     <children>
-        <Label text="Manage Employees" layoutX="20" layoutY="20"/>
-        <TableView fx:id="tableView" layoutX="90" layoutY="60" prefWidth="900" prefHeight="400">
+        <Label layoutX="20" layoutY="20" text="Manage Employees" />
+        <TableView fx:id="tableView" layoutX="90" layoutY="60" prefHeight="400" prefWidth="900">
             <columns>
-                <TableColumn fx:id="colId" text="ID" prefWidth="150"/>
-                <TableColumn fx:id="colName" text="Name" prefWidth="350"/>
-                <TableColumn fx:id="colPosition" text="Position" prefWidth="200"/>
-                <TableColumn fx:id="colSalary" text="Salary" prefWidth="200"/>
+                <TableColumn fx:id="colId" prefWidth="150" text="ID" />
+                <TableColumn fx:id="colName" prefWidth="350" text="Name" />
+                <TableColumn fx:id="colPosition" prefWidth="200" text="Position" />
+                <TableColumn fx:id="colSalary" prefWidth="200" text="Salary" />
             </columns>
         </TableView>
         <HBox layoutX="90" layoutY="480" spacing="20">
             <children>
-                <Button text="Add Employee" onAction="#handleAddEmployee"/>
-                <Button text="Edit Employee" onAction="#handleEditEmployee"/>
-                <Button text="Delete Employee" onAction="#handleDeleteEmployee"/>
-                <Button text="Return to Menu" onAction="#handleReturnToMenu"/>
+                <Button onAction="#handleAddEmployee" text="Add Employee" />
+                <Button onAction="#handleEditEmployee" text="Edit Employee" />
+                <Button onAction="#handleDeleteEmployee" text="Delete Employee" />
+                <Button onAction="#handleReturnToMenu" text="Return to Menu" />
             </children>
         </HBox>
     </children>

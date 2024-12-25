@@ -5,6 +5,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -34,9 +38,13 @@ public class ManageToysController {
     private TableColumn<Toy, String> colAgeLimit;
     @FXML
     private TableColumn<Toy, Double> colPrice;
+    @FXML
+    private TextField searchField;
 
     private String previousView;
     private String previousViewOfManageItems;
+
+    private FilteredList<Toy> filteredToys;
 
     public void setPreviousView(String previousView) {
         this.previousView = previousView;
@@ -58,15 +66,32 @@ public class ManageToysController {
     }
 
     private void loadToys() {
-        tableView.getItems().clear();
         try {
             ResultSet rs = DatabaseUtil.getAllToys();
+            ObservableList<Toy> toyList = FXCollections.observableArrayList();
             while (rs.next()) {
-                tableView.getItems().add(new Toy(rs.getString("id"), rs.getString("name"), rs.getString("origin"), rs.getString("age_limit") ,rs.getDouble("price")));
+                toyList.add(new Toy(rs.getString("id"), rs.getString("name"), rs.getString("origin"), rs.getString("age_limit"), rs.getDouble("price")));
             }
+            filteredToys = new FilteredList<>(toyList, p -> true);
+            SortedList<Toy> sortedToys = new SortedList<>(filteredToys);
+            sortedToys.comparatorProperty().bind(tableView.comparatorProperty());
+            tableView.setItems(sortedToys);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void handleSearch() {
+        String searchText = searchField.getText().toLowerCase();
+        filteredToys.setPredicate(toy -> {
+            if (searchText == null || searchText.isEmpty()) {
+                return true;
+            }
+            return toy.getName().toLowerCase().contains(searchText) ||
+                   toy.getOrigin().toLowerCase().contains(searchText) ||
+                   toy.getId().toLowerCase().contains(searchText);
+        });
     }
 
     @FXML
@@ -125,7 +150,7 @@ public class ManageToysController {
         Optional<Toy> result = dialog.showAndWait();
         result.ifPresent(toy -> {
             try {
-                DatabaseUtil.createToy(toy.getId(), toy.getName(), toy.getOrigin(),toy.getAgeLimit() ,toy.getPrice());
+                DatabaseUtil.createToy(toy.getId(), toy.getName(), toy.getOrigin(), toy.getAgeLimit(), toy.getPrice());
                 loadToys();
             } catch (SQLException e) {
                 e.printStackTrace();

@@ -1,29 +1,22 @@
 package capybara.bookstoremanagement;
 
 public class Book extends Item {
-    private int id;
-    private String itemid;
     private String title;
     private String author;
+    private int year;
+    private String genre;
+    private String publisher;
 
-    public Book(String name, String origin, double price, int quantity) {
-        super(name, origin, price, quantity);
-    }
-
-    public Book(int id, String itemid, String title, String author, double price) {
+    public Book(String id, String title, String author, int year, String genre, String publisher, double price, int stock, double cost) {
         this.id = id;
-        this.itemid = itemid;
         this.title = title;
         this.author = author;
+        this.year = year;
+        this.genre = genre;
+        this.publisher = publisher;
         this.price = price;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getitemid() {
-        return itemid;
+        this.stock = stock;
+        this.cost = cost;
     }
 
     public String getTitle() {
@@ -34,7 +27,15 @@ public class Book extends Item {
         return author;
     }
 
-    public double getPrice() {
-        return price;
+    public int getYear() {
+        return year;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public String getPublisher() {
+        return publisher;
     }
 }

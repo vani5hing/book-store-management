@@ -1,15 +1,28 @@
 package capybara.bookstoremanagement;
 
-
 import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 
 public class AdminController {
+
+    @FXML
+    private VBox vbox;
+    @FXML
+    private Label greetingLabel;
+
+    private String username;
+
+    public void setUsername(String username) {
+        this.username = username;
+        greetingLabel.setText("How it's going, " + username + "?");
+    }
 
     @FXML
     private void handleManageEmployees(ActionEvent event) {
@@ -35,17 +48,6 @@ public class AdminController {
     private void handleFinancialAnalysis(ActionEvent event) {
         navigateToViewWithPrevious(event, "financial_report", "admin_view");
     }
-
-    // private void navigateToView(ActionEvent event, String viewName) {
-    //     try {
-    //         Parent root = FXMLLoader.load(getClass().getResource(viewName + ".fxml"));
-    //         Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-    //         stage.setScene(new Scene(root, 640, 540));
-    //         stage.show();
-    //     } catch (IOException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
 
     private void navigateToViewWithPrevious(ActionEvent event, String viewName, String previousView) {
         try {

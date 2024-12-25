@@ -7,8 +7,22 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 
 public class EmployeeController {
+
+    @FXML
+    private VBox vbox;
+    @FXML
+    private Label greetingLabel;
+
+    private String username;
+
+    public void setUsername(String username) {
+        this.username = username;
+        greetingLabel.setText("How it's going, " + username + "?");
+    }
 
     @FXML
     private void handleManageItems(ActionEvent event) {

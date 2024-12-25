@@ -3,16 +3,40 @@ package capybara.bookstoremanagement;
 import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 
 public class ManagerController {
 
     @FXML
+    private VBox vbox;
+    @FXML
+    private Label greetingLabel;
+
+    private String username;
+
+    public void setUsername(String username) {
+        this.username = username;
+        greetingLabel.setText("How it's going, " + username + "?");
+    }
+
+    @FXML
     private void handleManageEmployees(ActionEvent event) {
         navigateToViewWithPrevious(event, "manage_employees", "manager_view");
+    }
+
+    @FXML
+    private void handleManageItems(ActionEvent event) {
+        navigateToViewWithPrevious(event, "manage_items", "manager_view");
+    }
+
+    @FXML
+    private void handleManageOrders(ActionEvent event) {
+        navigateToViewWithPrevious(event, "manage_orders", "manager_view");
     }
 
     @FXML
@@ -27,6 +51,10 @@ public class ManagerController {
             Object controller = loader.getController();
             if (controller instanceof ManageEmployeesController) {
                 ((ManageEmployeesController) controller).setPreviousView(previousView);
+            } else if (controller instanceof ManageItemsController) {
+                ((ManageItemsController) controller).setPreviousView(previousView);
+            } else if (controller instanceof ManageOrdersController) {
+                ((ManageOrdersController) controller).setPreviousView(previousView);
             } else if (controller instanceof FinancialReportController) {
                 ((FinancialReportController) controller).setPreviousView(previousView);
             }

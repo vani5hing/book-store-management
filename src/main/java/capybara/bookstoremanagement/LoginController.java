@@ -5,6 +5,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class LoginController {
 
@@ -23,13 +27,13 @@ public class LoginController {
             String role = getUserRole(username);
             switch (role) {
                 case "admin":
-                    navigateToView("admin_view");
+                    navigateToAdminView(username);
                     break;
                 case "manager":
-                    navigateToView("manager_view");
+                    navigateToManagerView(username);
                     break;
                 case "employee":
-                    navigateToView("employee_view");
+                    navigateToEmployeeView(username);
                     break;
                 default:
                     showAlert(Alert.AlertType.ERROR, "Login Failed", "Unknown user role.");
@@ -37,6 +41,48 @@ public class LoginController {
             }
         } else {
             showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid username or password.");
+        }
+    }
+
+    private void navigateToAdminView(String username) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("admin_view.fxml"));
+            Parent root = loader.load();
+            AdminController controller = loader.getController();
+            controller.setUsername(username);
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            stage.setScene(new Scene(root, 1080, 640));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void navigateToManagerView(String username) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("manager_view.fxml"));
+            Parent root = loader.load();
+            ManagerController controller = loader.getController();
+            controller.setUsername(username);
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            stage.setScene(new Scene(root, 1080, 640));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void navigateToEmployeeView(String username) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("employee_view.fxml"));
+            Parent root = loader.load();
+            EmployeeController controller = loader.getController();
+            controller.setUsername(username);
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            stage.setScene(new Scene(root, 1080, 640));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -55,14 +101,6 @@ public class LoginController {
 
     private String getUserRole(String username) {
         return DatabaseUtil.getUserRole(username);
-    }
-
-    private void navigateToView(String viewName) {
-        try {
-            App.setRoot(viewName);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String message) {

@@ -7,6 +7,6 @@
     <!-- <Label text="Employee View" /> -->
     <!-- Add manage books, customers, and orders functions here -->
     <Button text="Manage Customers" onAction="#handleManageCustomers" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;"/>
-    <Button text="Manage Books" onAction="#handleManageBooks" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;"/>
+    <Button text="Manage Items" onAction="#handleManageItems" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;"/>
     <Button text="Manage Orders" onAction="#handleManageOrders" style="-fx-font-size: 16px; -fx-padding: 10; -fx-pref-width: 200;"/>
 </VBox>

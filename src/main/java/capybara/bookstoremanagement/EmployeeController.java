@@ -11,23 +11,32 @@ import javafx.scene.Parent;
 public class EmployeeController {
 
     @FXML
-    private void handleManageBooks(ActionEvent event) {
-        navigateToView(event, "manage_books");
+    private void handleManageItems(ActionEvent event) {
+        navigateToViewWithPrevious(event, "manage_items", "employee_view");
     }
 
     @FXML
     private void handleManageCustomers(ActionEvent event) {
-        navigateToView(event, "manage_customers");
+        navigateToViewWithPrevious(event, "manage_customers", "employee_view");
     }
 
     @FXML
     private void handleManageOrders(ActionEvent event) {
-        navigateToView(event, "manage_orders");
+        navigateToViewWithPrevious(event, "manage_orders", "employee_view");
     }
 
-    private void navigateToView(ActionEvent event, String viewName) {
+    private void navigateToViewWithPrevious(ActionEvent event, String viewName, String previousView) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource(viewName + ".fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(viewName + ".fxml"));
+            Parent root = loader.load();
+            Object controller = loader.getController();
+            if (controller instanceof ManageItemsController) {
+                ((ManageItemsController) controller).setPreviousView(previousView);
+            } else if (controller instanceof ManageCustomersController) {
+                ((ManageCustomersController) controller).setPreviousView(previousView);
+            } else if (controller instanceof ManageOrdersController) {
+                ((ManageOrdersController) controller).setPreviousView(previousView);
+            }
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 640, 540));
             stage.show();

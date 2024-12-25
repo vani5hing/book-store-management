@@ -22,6 +22,12 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 public class ManageEmployeesController {
+    private String previousView;
+
+    public void setPreviousView(String previousView) {
+        this.previousView = previousView;
+    }
+
 
     @FXML
     private TableView<Employee> tableView;
@@ -183,7 +189,7 @@ public class ManageEmployeesController {
     @FXML
     private void handleReturnToMenu(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource(previousView + ".fxml"));
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root, 640, 480));
             stage.show();

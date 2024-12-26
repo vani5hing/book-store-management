@@ -1,9 +1,9 @@
 package capybara.bookstoremanagement;
 
 public class User {
-    private int id;
-    private String name;
-    private String position;
+    public int id;
+    public String name;
+    protected String position;
 
     public User() {}
 

@@ -1,9 +1,6 @@
 package capybara.bookstoremanagement;
 
-public class Employee {
-    private int id;
-    private String name;
-    private String position;
+public class Employee extends User{
     private double salary;
 
     public Employee(int id, String name, String position, double salary) {
@@ -13,8 +10,6 @@ public class Employee {
         this.salary = salary;
     }
 
-    public int getId() { return id; }
-    public String getName() { return name; }
     public String getPosition() { return position; }
     public double getSalary() { return salary; }
 }

@@ -21,12 +21,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-public class ManageCustomersController {
-    private String previousView;
-
-    public void setPreviousView(String previousView) {
-        this.previousView = previousView;
-    }
+public class ManageCustomersController extends ManageController{
 
     @FXML
     private TableView<Customer> tableView;
@@ -46,10 +41,10 @@ public class ManageCustomersController {
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         colPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
 
-        loadCustomers();
+        load();
     }
 
-    private void loadCustomers() {
+    public void load() {
         tableView.getItems().clear();
         try {
             ResultSet rs = DatabaseUtil.getAllCustomers();
@@ -62,7 +57,7 @@ public class ManageCustomersController {
     }
 
     @FXML
-    private void handleAddCustomer(ActionEvent event) {
+    public void handleAdd(ActionEvent event) {
         Dialog<Customer> dialog = new Dialog<>();
         dialog.setTitle("Add New Customer");
         dialog.setHeaderText("Enter the details of the new customer");
@@ -107,7 +102,7 @@ public class ManageCustomersController {
         result.ifPresent(customer -> {
             try {
                 DatabaseUtil.createCustomer(customer.getName(), customer.getEmail(), customer.getPhone());
-                loadCustomers();
+                load();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -115,7 +110,7 @@ public class ManageCustomersController {
     }
 
     @FXML
-    private void handleEditCustomer(ActionEvent event) {
+    public void handleEditCustomer(ActionEvent event) {
         Customer selectedCustomer = tableView.getSelectionModel().getSelectedItem();
         if (selectedCustomer != null) {
             Dialog<Customer> dialog = new Dialog<>();
@@ -159,7 +154,7 @@ public class ManageCustomersController {
             result.ifPresent(customer -> {
                 try {
                     DatabaseUtil.updateCustomer(customer.getId(), customer.getName(), customer.getEmail(), customer.getPhone());
-                    loadCustomers();
+                    load();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -168,7 +163,7 @@ public class ManageCustomersController {
     }
 
     @FXML
-    private void handleDeleteCustomer(ActionEvent event) {
+    public void handleDelete(ActionEvent event) {
         Customer selectedCustomer = tableView.getSelectionModel().getSelectedItem();
         if (selectedCustomer != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this customer?", ButtonType.YES, ButtonType.NO);
@@ -176,7 +171,7 @@ public class ManageCustomersController {
                 if (response == ButtonType.YES) {
                     try {
                         DatabaseUtil.deleteCustomer(selectedCustomer.getId());
-                        loadCustomers();
+                        load();
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -186,7 +181,7 @@ public class ManageCustomersController {
     }
 
     @FXML
-    private void handleReturnToMenu(ActionEvent event) {
+    public void handleReturnToMenu(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(previousView + ".fxml"));
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();

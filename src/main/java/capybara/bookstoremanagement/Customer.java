@@ -1,8 +1,6 @@
 package capybara.bookstoremanagement;
 
-public class Customer {
-    private int id;
-    private String name;
+public class Customer extends User{
     private String email;
     private String phone;
 
@@ -11,14 +9,6 @@ public class Customer {
         this.name = name;
         this.email = email;
         this.phone = phone;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public String getEmail() {

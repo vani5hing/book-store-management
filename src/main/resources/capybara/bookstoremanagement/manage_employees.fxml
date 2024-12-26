@@ -20,9 +20,9 @@
         </TableView>
         <HBox layoutX="90" layoutY="480" spacing="20">
             <children>
-                <Button onAction="#handleAddEmployee" text="Add Employee" />
+                <Button onAction="#handleAdd" text="Add Employee" />
                 <Button onAction="#handleEditEmployee" text="Edit Employee" />
-                <Button onAction="#handleDeleteEmployee" text="Delete Employee" />
+                <Button onAction="#handleDelete" text="Delete Employee" />
                 <Button onAction="#handleReturnToMenu" text="Return to Menu" />
             </children>
         </HBox>

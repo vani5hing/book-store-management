@@ -3,7 +3,7 @@
 ## 📖 **Introduction**  
 The **Bookstore Management System** is a comprehensive and efficient solution designed to simplify the management of bookstore operations. It offers functionalities for managing books, customers, employees, and sales orders. Built using **JavaFX** and **SQLite**, this system ensures smooth operations with an intuitive user interface and reliable database management.
 
-![UML Diagram](https://github.com/respectthanh/book-store-management/blob/main/BookStoreManagement.png)
+![UML Diagram](https://github.com/respectthanh/book-store-management/blob/main/ClassDiagram0.png)
 
 ## 📸 **Screenshots**
 - **Login Screen:**  

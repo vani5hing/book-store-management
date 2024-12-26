@@ -46,7 +46,6 @@ public class ManageBillController {
                 String timeCreated = rs.getString("timeCreated");
                 double totalPrice = rs.getDouble("totalPrice");
 
-                // Populate books and bookTitles maps
                 ResultSet orderItems = DatabaseUtil.getOrdersByCustomerAndTime(customer, timeCreated);
                 while (orderItems.next()) {
                     String itemid = orderItems.getString("itemid");
@@ -94,18 +93,5 @@ public class ManageBillController {
         }
 
         return new Bill(customer, books, bookTitles, totalPrice, timeCreated);
-    }
-
-    private void saveBillToFile(Bill bill) {
-        // Implementation for saving bill to file
-    }
-
-    private void displayBill(Bill bill) {
-        // Implementation for displaying bill
-    }
-
-    private String getSelectedCustomer() {
-        // Implementation for getting selected customer
-        return "selectedCustomer";
     }
 }

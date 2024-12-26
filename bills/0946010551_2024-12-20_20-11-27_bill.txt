@@ -1,0 +1,5 @@
+Bill for customer: 0946010551
+Time created: 2024-12-20 20:11:27
+Books:
+ID: 978-0-945119-54-8, Title: Difficult them, Quantity: 7
+Total Price: $235,20

@@ -16,9 +16,9 @@
         </TableView>
         <HBox layoutX="20" layoutY="480" spacing="20">
             <children>
-                <Button text="Add Customer" onAction="#handleAddCustomer"/>
+                <Button text="Add Customer" onAction="#handleAdd"/>
                 <Button text="Edit Customer" onAction="#handleEditCustomer"/>
-                <Button text="Delete Customer" onAction="#handleDeleteCustomer"/>
+                <Button text="Delete Customer" onAction="#handleDelete"/>
                 <Button text="Return to Menu" onAction="#handleReturnToMenu"/>
             </children>
         </HBox>

@@ -2,5 +2,4 @@ Bill for customer: 0987
 Time created: 2024-12-25 03:52:35
 Books:
 ID: 978-0-7798-4706-8, Title: Situation even, Quantity: 1
-ID: 978-0-88842-326-9, Title: His whole certain, Quantity: 2
-Total Price: $32,90
+Total Price: $29,10

@@ -21,12 +21,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-public class ManageEmployeesController {
-    private String previousView;
-
-    public void setPreviousView(String previousView) {
-        this.previousView = previousView;
-    }
+public class ManageEmployeesController extends ManageController {
 
     @FXML
     private TableView<Employee> tableView;
@@ -46,10 +41,10 @@ public class ManageEmployeesController {
         colPosition.setCellValueFactory(new PropertyValueFactory<>("position"));
         colSalary.setCellValueFactory(new PropertyValueFactory<>("salary"));
 
-        loadEmployees();
+        load();
     }
 
-    private void loadEmployees() {
+    public void load() {
         tableView.getItems().clear();
         try {
             ResultSet rs = DatabaseUtil.getAllEmployees();
@@ -62,7 +57,7 @@ public class ManageEmployeesController {
     }
 
     @FXML
-    private void handleAddEmployee(ActionEvent event) {
+    public void handleAdd(ActionEvent event) {
         Dialog<Employee> dialog = new Dialog<>();
         dialog.setTitle("Add New Employee");
         dialog.setHeaderText("Enter the details of the new employee");
@@ -107,7 +102,7 @@ public class ManageEmployeesController {
         result.ifPresent(employee -> {
             try {
                 DatabaseUtil.createEmployee(employee.getName(), employee.getPosition(), employee.getSalary());
-                loadEmployees();
+                load();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -115,7 +110,7 @@ public class ManageEmployeesController {
     }
 
     @FXML
-    private void handleEditEmployee(ActionEvent event) {
+    public void handleEditEmployee(ActionEvent event) {
         Employee selectedEmployee = tableView.getSelectionModel().getSelectedItem();
         if (selectedEmployee != null) {
             Dialog<Employee> dialog = new Dialog<>();
@@ -159,7 +154,7 @@ public class ManageEmployeesController {
             result.ifPresent(employee -> {
                 try {
                     DatabaseUtil.updateEmployee(employee.getId(), employee.getName(), employee.getPosition(), employee.getSalary());
-                    loadEmployees();
+                    load();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -168,7 +163,7 @@ public class ManageEmployeesController {
     }
 
     @FXML
-    private void handleDeleteEmployee(ActionEvent event) {
+    public void handleDelete(ActionEvent event) {
         Employee selectedEmployee = tableView.getSelectionModel().getSelectedItem();
         if (selectedEmployee != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this employee?", ButtonType.YES, ButtonType.NO);
@@ -176,7 +171,7 @@ public class ManageEmployeesController {
                 if (response == ButtonType.YES) {
                     try {
                         DatabaseUtil.deleteEmployee(selectedEmployee.getId());
-                        loadEmployees();
+                        load();
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -186,7 +181,7 @@ public class ManageEmployeesController {
     }
 
     @FXML
-    private void handleReturnToMenu(ActionEvent event) {
+    public void handleReturnToMenu(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(previousView + ".fxml"));
             Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
